@@ -8,7 +8,7 @@
 \usepackage{color}
 
 \usetheme{boxes}
-
+\usecolortheme{beaver}
 \beamertemplatenavigationsymbolsempty
 \setbeamertemplate{sections/subsections in toc}[circle]
 \setbeamertemplate{footline}[frame number]
@@ -23,8 +23,7 @@
 \definecolor{gray}{rgb}{0.4,0.4,0.4}
 \definecolor{lightgray}{rgb}{0.8,0.8,0.8}
 \definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
-\newrgbcolor{mygreen}{.00 .5 .00}
-\newrgbcolor{myyellow}{.6 .6 .00}
+
 
 \title{Inférence bayésienne adaptative pour la reconstruction de source en dispersion atmosphérique}
 \author{Harizo Rajaona}
@@ -32,7 +31,39 @@
 \date{21 novembre 2016}
 
 \begin{document}
+	
+	
 \begin{frame}
 	\titlepage
+\end{frame}
+\begin{frame}
+	\frametitle{Introduction.}
+	This is a new frame. \\
+	
+	$$\sum\limits_{k=1}^{+\infty} \dfrac{1}{k^2} = \dfrac{\pi^2}{6} $$
+\end{frame}
+\begin{frame}
+	\frametitle{Development}
+	\begin{itemize}
+		\item This is an item.
+		\item Yo bro. I love $\mathbf{X} \in \mathbb{R}^2$.
+	\end{itemize}
+\end{frame}
+\begin{frame}
+	\frametitle{Test for SVG export}
+	Here, look at this cool matrix:
+	\begin{figure}
+		\centering
+		\def\svgwidth{\columnwidth}
+		\input{test_matrix.pdf_tex}
+	\end{figure}
+\end{frame}
+\begin{frame}
+	\frametitle{Test for PNG image support}
+	Hey there is a cool plot:
+	\begin{figure}
+		\centering
+			\includegraphics{test_figure.png}
+	\end{figure}
 \end{frame}
 \end{document}

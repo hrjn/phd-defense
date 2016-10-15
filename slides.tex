@@ -10,6 +10,7 @@
 \usetheme{boxes}
 \usecolortheme{beaver}
 \beamertemplatenavigationsymbolsempty
+\setbeamertemplate{title page}[default][colsep=-4bp,rounded=true]
 \setbeamertemplate{sections/subsections in toc}[circle]
 \setbeamertemplate{footline}[frame number]
 \setbeamertemplate{itemize items}[circle]
@@ -31,39 +32,40 @@
 \date{21 novembre 2016}
 
 \begin{document}
+\AtBeginSection[]
+{
+	\begin{frame}
+		\tableofcontents[currentsection]
+		% Die Option [pausesections]
+	\end{frame}
+}
 	
 	
 \begin{frame}
 	\titlepage
 \end{frame}
 \begin{frame}
-	\frametitle{Introduction.}
-	This is a new frame. \\
-	
-	$$\sum\limits_{k=1}^{+\infty} \dfrac{1}{k^2} = \dfrac{\pi^2}{6} $$
+	\tableofcontents
 \end{frame}
+\section{Contexte, enjeux et problématique}
+
 \begin{frame}
-	\frametitle{Development}
-	\begin{itemize}
-		\item This is an item.
-		\item Yo bro. I love $\mathbf{X} \in \mathbb{R}^2$.
-	\end{itemize}
+	(vide)
 \end{frame}
+\section{Inférence bayésienne et méthodes de Monte-Carlo}
 \begin{frame}
-	\frametitle{Test for SVG export}
-	Here, look at this cool matrix:
-	\begin{figure}
-		\centering
-		\def\svgwidth{\columnwidth}
-		\input{test_matrix.pdf_tex}
-	\end{figure}
+	(vide)
 \end{frame}
+\section{Application au cas expérimental FFT07}
 \begin{frame}
-	\frametitle{Test for PNG image support}
-	Hey there is a cool plot:
-	\begin{figure}
-		\centering
-			\includegraphics{test_figure.png}
-	\end{figure}
+	(vide)
+\end{frame}
+\section{Application avec modèle rétrograde aux cas simulés Beaune et Opéra}
+\begin{frame}
+	(vide)
+\end{frame}
+\section{Conclusions et perspectives}
+\begin{frame}
+	(vide)
 \end{frame}
 \end{document}

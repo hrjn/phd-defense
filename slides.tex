@@ -9,8 +9,13 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{color}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{bm}
 
 \usetheme{boxes}
+\usefonttheme[onlymath]{serif}
 \usecolortheme{beaver}
 \beamertemplatenavigationsymbolsempty
 \setbeamertemplate{title page}[default][colsep=-4bp,rounded=true]
@@ -22,6 +27,15 @@
 \setbeamercolor{block title}{bg=blue!40,fg=black}
 \setbeamercolor{block body}{bg=blue!10,fg=black}
 
+\newtheorem{important}{Important}
+\newenvironment<>{important}[1][]{%
+	\setbeamercolor{block title}{fg=white,bg=red!40!black}%
+	\setbeamercolor{block body}{fg=black,bg=red!10}
+	\setbeamertemplate{itemize item}{\color{red!40!black}$\blacktriangleright$}
+	\begin{block}{#2}\textbf{#1}}{\end{block}}
+
+\newcommand{\VecQSource}{{\bm{q}}}
+\newcommand{\VecPosSource}{{\bm{x_s}}}
 
 
 
@@ -33,10 +47,13 @@
 \definecolor{shadecolor}{rgb}{0.9,0.9,0.9}
 
 
+
+
 \title{Inférence bayésienne adaptative pour la reconstruction de source en dispersion atmosphérique}
 \author{Harizo Rajaona}
-\institute{CrisTaL - CEA - Aria Technologies}
-\date{21 novembre 2016}
+\institute{Directeurs de thèse: Yves Delignon, François Septier}
+% Put logos here!
+\date{Lille \\ 21 novembre 2016}
 
 \begin{document}
 \AtBeginSection[]
@@ -132,39 +149,68 @@
 
 % =====  Terme source  ================================================================
 \begin{frame}
-	\frametitle{Terme source}
-
-\end{frame}
-
-
-\begin{frame}
-	\frametitle{Contexte}
-	Accidents + introduire la physique de l'atmo.
-\end{frame}
-\begin{frame}
-	\frametitle{Physique de l'atmosphère}
-	Que veut-on modéliser? Quels modèles? (gaussien, eulérien, lagrangien) Quels paramètres? (météo, source)
-\end{frame}
-\begin{frame}
-	\frametitle{Estimer la source: un problème inverse}
-	Présenter la dualité direct/inverse. Définir les paramètres d'une source. Transition vers l'état de l'art
-\end{frame}
-\begin{frame}
-	\frametitle{Estimer la source: état de l'art}
-	Présenter la question comme un problème inverse mal-posé. Lister les méthodes:
+	\frametitle{Terme source: définitions}
+	Ici, on formule l'hypothèse d'une source:
 	\begin{itemize}
-		\item rétro-transport (x1),
-		\item formulation linéaire (minimiser une fonction-coût, maximiser une vraisemblance/posterior): x1= optimisation+ reg., x1 = : max likelihood + prior, lier en couleur avec la slide précédente
-		\item formulation générale: équation, dire qu'on veut trouver les paramètres $x_s$ et $q$ au lieu de reconstruire le vecteur $\varsigma$. Génétique: OK car problème d'exploration combinatoire difficile (schéma?) Bayésien et simulation stochastique: explorer efficacement l'espace des paramètres par échantillonnage aléatoire.
-	\end{itemize} 
+		\item localisée (représentée par un point géographique $\VecPosSource \in \mathbb{R}^2$),
+		\item unique (un seul point d'émission),
+		\item non-instantanée (émission sur $T_s > 1$ intervalles de temps).\\
+	\end{itemize}
+	\vspace{0.3cm}
+	Profil d'émission: vecteur $\VecQSource \in \mathbb{R}^{T_s} $:
+		$$ \VecQSource = \left(q(t'_1), q(t'_2), \cdots, q(t'_{T_s})\right) $$
+		
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{courbe_profil_source}
+	\end{figure}
+	
 \end{frame}
+
+% =====  Terme source  ================================================================
+
 \begin{frame}
-	\frametitle{Problématique de recherche}
+	\frametitle{Terme source: estimation}
+	Reconstruire un terme source à partir des observations est un problème inverse.
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.75\textwidth]{modele_direct} \\
+		\vspace{0.5cm}
+		\includegraphics[width=0.75\textwidth]{modele_inverse}
+	\end{figure}
+	
+	Plusieurs approches de résolution possibles:
 	\begin{itemize}
-		\item le choix bayésien: pourquoi?
-		\item Comment? C'est le coeur de la thèse. Poser la problématique.
+		\item rétro-transport,
+		\item résolution d'un système linéaire,
+		\item algorithmes évolutionnaires,
+		\item méthodes bayésiennes et simulation stochastique.
 	\end{itemize}
 \end{frame}
+
+
+% =====  Problématique de recherche ================================================================
+
+\begin{frame}
+	\frametitle{Problématique de recherche}
+	On se concentre sur les méthodes bayésiennes:
+	\begin{itemize}
+		\item formalisme rigoureux pour estimation et quantification de l'incertitude,
+		\item exploitation d'un nombre limité de mesures (régularisation),
+		\item {\color{red} temps de calcul potentiellement élevés,}
+		\item {\color{red} estimation disjointe de la position et du profil d'émission.}
+	\end{itemize}
+	
+    \begin{important}[Problématique]
+    	\begin{itemize}
+    		\item Développer une méthode bayésienne pour estimer la localisation \textbf{et} le profil d'émission d'une source.
+    		\item Coupler cette méthode avec un modèle de dispersion atmosphérique dans une chaîne de calcul opérationnelle.
+    	\end{itemize}
+    \end{important}
+\end{frame}
+
+
 \section{Inférence bayésienne et méthodes de Monte-Carlo}
 \begin{frame}
 	(vide)

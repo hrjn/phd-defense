@@ -36,6 +36,8 @@
 
 \newcommand{\VecQSource}{{\bm{q}}}
 \newcommand{\VecPosSource}{{\bm{x_s}}}
+\newcommand{\VecTheta}{{\bm{\theta}}}
+\newcommand{\VecObs}{{\bm{\eta}}}
 
 
 
@@ -116,7 +118,7 @@
 	\frametitle{Contexte}
 	Outils pour détecter et évaluer le risque:
 	\begin{itemize}
-		\item données d'observation (capteurs)
+		\item données d'observation (capteurs mesurant la concentration de polluant)
 		\item outils de modélisation des phénomènes atmosphériques
 	\end{itemize}
 	\begin{figure}
@@ -171,7 +173,7 @@
 
 \begin{frame}
 	\frametitle{Terme source: estimation}
-	Reconstruire un terme source à partir des observations est un problème inverse.
+	Reconstruire les paramètres d'un terme source à partir des observations est un problème inverse.
 	
 	\begin{figure}
 		\centering
@@ -202,19 +204,63 @@
 		\item {\color{red} estimation disjointe de la position et du profil d'émission.}
 	\end{itemize}
 	
-    \begin{important}[Problématique]
+    \begin{important}[Problématique:]
     	\begin{itemize}
     		\item Développer une méthode bayésienne pour estimer la localisation \textbf{et} le profil d'émission d'une source.
     		\item Coupler cette méthode avec un modèle de dispersion atmosphérique dans une chaîne de calcul opérationnelle.
     	\end{itemize}
     \end{important}
 \end{frame}
+% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\section{Une méthodologie adaptative pour l'inférence bayésienne}
+% =====  Le choix bayésien ================================================================
 
-
-\section{Inférence bayésienne et méthodes de Monte-Carlo}
 \begin{frame}
-	(vide)
+	\frametitle{Le choix bayésien}
+	\begin{block}{	Inférence bayésienne}
+	Estimation probabiliste des paramètres $\VecTheta$ d'un système ayant généré un ensemble d'observations $\VecObs$.
+	\end{block}
+	\begin{itemize}
+		\item $\VecTheta$: paramètres du terme source
+		\item $\VecObs$: mesures de concentration observées
+	\end{itemize}
+	Règle de Bayes:
+	$$ \pi(\VecTheta) = p(\VecTheta | \VecObs) = \dfrac{p(\VecTheta)p(\VecObs|\VecTheta)}{p(\VecObs)} \propto p(\VecTheta)p(\VecObs|\VecTheta) $$
+	\begin{itemize}
+		\item loi a posteriori $\pi(\VecTheta)$: information sur $\VecTheta$ après acquisition de $\VecObs$,
+		\item loi a priori $p(\VecTheta)$: information préalable sur $\VecTheta$,
+		\item fonction de vraisemblance $p(\VecObs | \VecTheta)$: probabilité d'observer $\VecObs$ pour $\VecTheta$ fixé.
+	\end{itemize}
 \end{frame}
+% =====  Méthodes MC  ================================================================
+
+\begin{frame}
+	\frametitle{Le choix bayésien}
+	\begin{itemize}
+	\item \textbf{Problème}: $p(\VecObs | \VecTheta)$  trop coûteuse (ou impossible) à calculer \\$\Rightarrow$ {\color{red} pas d'expression analytique pour $p(\VecTheta | \VecObs)$ ! } \\
+	
+	 $\Rightarrow$ recours à des méthodes d'approximation numérique
+	
+	\begin{block}{Méthodes de Monte-Carlo}
+		Permettent d'approximer l'espérance de toute fonction d'une variable aléatoire  de loi $\pi$:
+%		\begin{equation*}
+%			\begin{split}
+%				\mathbb{E}_{\pi}[\psi(\VecTheta)] &= \int \psi(\VecTheta)\pi(\VecTheta)d\VecTheta \\
+%				& \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}\psi(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi
+%			\end{split}
+%		\end{equation*}
+		$$ \mathbb{E}_{\pi}[\psi(\VecTheta)] = \int \psi(\VecTheta)\pi(\VecTheta)d\VecTheta \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}\psi(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi $$
+	\end{block}
+	
+	\item Estimateur bayésien MMSE: s'obtient en posant $\psi(\VecTheta) = \VecTheta$.
+	
+	\end{itemize}
+	
+	
+
+\end{frame}
+
 \section{Application au cas expérimental FFT07}
 \begin{frame}
 	(vide)

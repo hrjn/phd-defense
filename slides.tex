@@ -34,6 +34,14 @@
 	\setbeamertemplate{itemize item}{\color{red!40!black}$\blacktriangleright$}
 	\begin{block}{#2}\textbf{#1}}{\end{block}}
 
+\newtheorem{algorithme}{Algorithme}
+\newenvironment<>{algorithme}[1][]{%
+	\setbeamercolor{block title}{fg=white,bg=green!40!black}%
+	\setbeamercolor{block body}{fg=black,bg=green!10}
+	\setbeamertemplate{itemize item}{\color{green!40!black}$\blacktriangleright$}
+	\setbeamercolor{enumerate item}{fg=black}
+	\begin{block}{#2}\textbf{#1}}{\end{block}}
+
 \newcommand{\VecQSource}{{\bm{q}}}
 \newcommand{\VecPosSource}{{\bm{x_s}}}
 \newcommand{\VecTheta}{{\bm{\theta}}}
@@ -256,10 +264,64 @@
 	\item Estimateur bayésien MMSE: s'obtient en posant $\psi(\VecTheta) = \VecTheta$.
 	
 	\end{itemize}
-	
-	
-
 \end{frame}
+
+% =====  MCMC (1)  ================================================================
+
+\begin{frame}
+	\frametitle{MCMC}
+	\begin{block}{Markov Chain Monte-Carlo (MCMC)}
+		Méthodes de construction d'une chaîne de Markov dont la distribution stationnaire est la loi cible $\pi$.
+	\end{block}
+	
+    \begin{algorithme}[Exemple 1: algorithme de Metropolis-Hastings (MH)\\]
+	    Initialiser la chaîne à $\VecTheta^{(0)}$ et choisir un noyau de transition $\mathcal{K}(\cdot, \cdot)$. A la i-ème itération et jusqu'à convergence:\\
+	    \begin{enumerate}
+	    	\item Tirer $\VecTheta^* \sim \mathcal{K}(\VecTheta^{(i-1)},\VecTheta^*)$
+	    	\item Calculer $r = \text{min }\left\{1, \dfrac{\pi(\VecTheta^*)\mathcal{K}(\VecTheta^*,\VecTheta^{(i-1)})}{\pi(\VecTheta^{(i-1)})\mathcal{K}(\VecTheta^{(i-1)},\VecTheta)}\right\}$
+	    	\item Accepter $\VecTheta^{(i)} = \VecTheta$ avec la probabilité $r$. Si rejet, garder $\VecTheta^{(i)} = \VecTheta^{(i-1)}$	    	
+	    \end{enumerate}
+    \end{algorithme}
+	
+\end{frame}
+
+% =====  MCMC (2)  ================================================================
+\begin{frame}
+	\frametitle{MCMC}
+	MH sur un mélange de gaussiennes: {\small $\pi(\VecTheta) = \gamma\mathcal{N}(\VecTheta|\mu_1, \sigma_1^2) + (1-\gamma)\mathcal{N}(\VecTheta | \mu_2, \sigma_2^2)$}
+	\begin{columns}
+		\column{0.8\linewidth}
+			\begin{figure}
+				\only<1>{
+				\includegraphics[width=0.75\textwidth]{mh_1}
+				}
+				\only<2>{
+					\includegraphics[width=0.75\textwidth]{mh_2}
+				}
+				\only<3>{
+					\includegraphics[width=0.75\textwidth]{mh_3}
+				}
+			\end{figure}
+		\column{0.2\linewidth}
+{\small 			$\gamma = 0.3$\\
+			$\mu_1 = -20$\\
+			$\sigma_1 = 10$\\
+			$\mu_2 = 20$\\
+			$\sigma_2 = 10$\\}
+	\end{columns}
+	\begin{itemize}
+%		\item<1>\textit{Bad mixing}: transitions trop {\color{red}faibles}
+%		\item<2>\textit{Bad mixing}: transitions trop {\color{red}grandes}
+%		\item<3>\textit{Good mixing}
+		\item<3> Performances liées aux choix du noyau et de l'initialisation !
+	\end{itemize}
+\end{frame}
+
+% =====  MCMC (2)  ================================================================
+\begin{frame}
+	\frametitle{MCMC}
+\end{frame}
+
 
 \section{Application au cas expérimental FFT07}
 \begin{frame}

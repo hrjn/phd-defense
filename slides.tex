@@ -24,7 +24,7 @@
 \setbeamertemplate{itemize items}[circle]
 \setbeamertemplate{itemize subitem}[square]
 \setbeamertemplate{blocks}[rounded][shadow=false]
-\setbeamercolor{block title}{bg=blue!40,fg=black}
+\setbeamercolor{block title}{bg=blue!40!black,fg=white}
 \setbeamercolor{block body}{bg=blue!10,fg=black}
 
 \newtheorem{important}{Important}
@@ -46,6 +46,8 @@
 \newcommand{\VecPosSource}{{\bm{x_s}}}
 \newcommand{\VecTheta}{{\bm{\theta}}}
 \newcommand{\VecObs}{{\bm{\eta}}}
+\newcommand{\MatC}{{\bm{C}}}
+\newcommand{\VecErreur}{{\bm{\varepsilon}}}
 
 
 
@@ -113,10 +115,10 @@
 		\end{subfigure}
 	\end{figure}
 	
-	Durant de tels événements, les priorités sont alors:
+	Priorités:
 	\begin{itemize}
-		\item la mise en sécurité des populations,
-		\item l'action des premiers secours pour atténuer/neutraliser le risque.
+		\item informer et protéger les populations,
+		\item atténuer/neutraliser le risque.
 	\end{itemize}
 \end{frame}
 
@@ -124,14 +126,16 @@
 
 \begin{frame}
 	\frametitle{Contexte}
-	Outils pour détecter et évaluer le risque:
+	Outils de détection et d'évaluation du risque:
 	\begin{itemize}
-		\item données d'observation (capteurs mesurant la concentration de polluant)
-		\item outils de modélisation des phénomènes atmosphériques
+		\item<1-2>données d'observation (capteurs mesurant la concentration de polluant)
+		\item<2>outils de modélisation des phénomènes atmosphériques
 	\end{itemize}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.9\textwidth]{diagram_context_2.pdf}
+
+				\includegraphics[width=0.9\textwidth]{diagram_context_step_2.pdf}
+		
 	\end{figure}
 \end{frame}
 
@@ -160,20 +164,22 @@
 % =====  Terme source  ================================================================
 \begin{frame}
 	\frametitle{Terme source: définitions}
-	Ici, on formule l'hypothèse d'une source:
+	Hypothèses sur la nature de la source:
 	\begin{itemize}
-		\item localisée (représentée par un point géographique $\VecPosSource \in \mathbb{R}^2$),
+		\item localisée (représentée par un point géographique $\VecPosSource \in \mathbb{R}^3$),
 		\item unique (un seul point d'émission),
-		\item non-instantanée (émission sur $T_s > 1$ intervalles de temps).\\
+		\item non-instantanée, avec un profil temporel d'émission: $$\VecQSource = \left(q(t'_1), q(t'_2), \cdots, q(t'_{T_s})\right)$$
 	\end{itemize}
-	\vspace{0.3cm}
-	Profil d'émission: vecteur $\VecQSource \in \mathbb{R}^{T_s} $:
-		$$ \VecQSource = \left(q(t'_1), q(t'_2), \cdots, q(t'_{T_s})\right) $$
-		
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.6\textwidth]{courbe_profil_source}
-	\end{figure}
+%	 vecteur $\VecQSource \in \mathbb{R}^{T_s} $:
+	\begin{columns}
+		\column{0.75\linewidth}
+			\begin{figure}
+				\includegraphics[width=0.99\textwidth]{courbe_profil_source_paliers}
+			\end{figure}
+		\column{0.25\linewidth}
+		{$\Rightarrow$ \small émission constante sur le palier $ [t'_{i-1}, t'_i] $}
+	\end{columns}
+
 	
 \end{frame}
 
@@ -181,7 +187,7 @@
 
 \begin{frame}
 	\frametitle{Terme source: estimation}
-	Reconstruire les paramètres d'un terme source à partir des observations est un problème inverse.
+	Reconstruire les paramètres d'un terme source (STE\footnote{Source Term Estimation}) à partir des observations est un problème inverse.
 	
 	\begin{figure}
 		\centering
@@ -221,109 +227,336 @@
 \end{frame}
 % ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-\section{Une méthodologie adaptative pour l'inférence bayésienne}
+\section{Méthodologie adaptative pour l'inférence bayésienne}
 % =====  Le choix bayésien ================================================================
 
 \begin{frame}
-	\frametitle{Le choix bayésien}
-	\begin{block}{	Inférence bayésienne}
-	Estimation probabiliste des paramètres $\VecTheta$ d'un système ayant généré un ensemble d'observations $\VecObs$.
-	\end{block}
+	\frametitle{Inférence bayésienne}
+	\textbf{Principe}: estimation probabiliste des paramètres $\VecTheta$ d'un système ayant généré un ensemble d'observations $\VecObs$.
 	\begin{itemize}
-		\item $\VecTheta$: paramètres du terme source
-		\item $\VecObs$: mesures de concentration observées
+		\item $\VecTheta ~\Rightarrow$ paramètres du terme source
+		\item $\VecObs ~ \Rightarrow$ mesures de concentration observées
 	\end{itemize}
-	Règle de Bayes:
-	$$ \pi(\VecTheta) = p(\VecTheta | \VecObs) = \dfrac{p(\VecTheta)p(\VecObs|\VecTheta)}{p(\VecObs)} \propto p(\VecTheta)p(\VecObs|\VecTheta) $$
-	\begin{itemize}
-		\item loi a posteriori $\pi(\VecTheta)$: information sur $\VecTheta$ après acquisition de $\VecObs$,
-		\item loi a priori $p(\VecTheta)$: information préalable sur $\VecTheta$,
-		\item fonction de vraisemblance $p(\VecObs | \VecTheta)$: probabilité d'observer $\VecObs$ pour $\VecTheta$ fixé.
-	\end{itemize}
+	\begin{block}{\textbf{Règle de Bayes}}
+		$$ \pi(\VecTheta) = p(\VecTheta | \VecObs) = \dfrac{p(\VecTheta)p(\VecObs|\VecTheta)}{p(\VecObs)} \propto p(\VecTheta)p(\VecObs|\VecTheta) $$
+		\begin{itemize}
+			\item loi a posteriori $\pi(\VecTheta)$: information sur $\VecTheta$ connaissant $\VecObs$,
+			\item loi a priori $p(\VecTheta)$: information préalable sur $\VecTheta$,
+			\item vraisemblance $p(\VecObs | \VecTheta)$: probabilité d'observer $\VecObs$ pour $\VecTheta$ fixé.
+		\end{itemize}
+		\end{block}
 \end{frame}
 % =====  Méthodes MC  ================================================================
 
 \begin{frame}
-	\frametitle{Le choix bayésien}
+	\frametitle{Inférence bayésienne}
 	\begin{itemize}
-	\item \textbf{Problème}: $p(\VecObs | \VecTheta)$  trop coûteuse (ou impossible) à calculer \\$\Rightarrow$ {\color{red} pas d'expression analytique pour $p(\VecTheta | \VecObs)$ ! } \\
+	\item \textbf{Problème}: $p(\VecObs | \VecTheta)$  trop coûteuse (ou impossible) à calculer \\$\Rightarrow$ {\color{red} pas d'expression analytique pour $\pi(\VecTheta)$ ! } \\
 	
 	 $\Rightarrow$ recours à des méthodes d'approximation numérique
 	
-	\begin{block}{Méthodes de Monte-Carlo}
-		Permettent d'approximer l'espérance de toute fonction d'une variable aléatoire  de loi $\pi$:
+	\begin{block}{\textbf{Méthodes de Monte-Carlo}}
+		Permettent d'approximer l'espérance de toute fonction d'une variable aléatoire  de loi $\pi$ en échantillonnant depuis cette loi:
 %		\begin{equation*}
 %			\begin{split}
 %				\mathbb{E}_{\pi}[\psi(\VecTheta)] &= \int \psi(\VecTheta)\pi(\VecTheta)d\VecTheta \\
 %				& \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}\psi(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi
 %			\end{split}
 %		\end{equation*}
-		$$ \mathbb{E}_{\pi}[\psi(\VecTheta)] = \int \psi(\VecTheta)\pi(\VecTheta)d\VecTheta \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}\psi(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi $$
+		$$ \mathbb{E}_{\pi}[f(\VecTheta)] = \int f(\VecTheta)\pi(\VecTheta)d\VecTheta \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}f(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi $$
 	\end{block}
 	
-	\item Estimateur bayésien MMSE: s'obtient en posant $\psi(\VecTheta) = \VecTheta$.
+	\item Obtention d'estimateurs bayésiens par simulation (ex: poser $f(\VecTheta) = \VecTheta$ pour le MMSE\footnote{Minimum Mean Square Estimator}).
 	
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Méthodes d'échantillonnage}
+%	Plusieurs méthodes permettent d'échantillonner depuis la loi cible:
+	\begin{itemize}
+		\item Algorithmes \textbf{MCMC}\footnote{Markov Chain Monte Carlo}: $\pi$ est la distribution stationnaire d'une chaîne de Markov construite par itérations successives.
+		\begin{itemize}
+			\item Metropolis-Hastings
+			\item échantillonneur de Gibbs
+		\end{itemize}
+		Bons résultats obtenus dans la littérature STE:
+		\begin{itemize}
+
+			\item en milieu urbain: Keats (2007), Chow (2008)
+			\item en multi-source: Yee (2008)
+		\end{itemize}
+		
+		Inconvénients:
+		\begin{itemize}
+			\item perte d'une partie des échantillons générés (\textit{burn-in})
+			\item états corrélés (non-parallélisable)
+			\item MH: performances liées au choix du noyau et de l'initialisation
+			\item Gibbs: requiert les lois conditionnelles de $\VecTheta$
+		\end{itemize}
+		
+		\item Algorithmes \textbf{d'échantillonnage d'importance} (\textbf{IS}\footnote{Importance Sampling}): tirage d'une population d'échantillons pondérés (ou particules) à partir d'une loi de proposition.
 	\end{itemize}
 \end{frame}
 
 % =====  MCMC (1)  ================================================================
 
-\begin{frame}
-	\frametitle{MCMC}
-	\begin{block}{Markov Chain Monte-Carlo (MCMC)}
-		Méthodes de construction d'une chaîne de Markov dont la distribution stationnaire est la loi cible $\pi$.
-	\end{block}
-	
-    \begin{algorithme}[Exemple 1: algorithme de Metropolis-Hastings (MH)\\]
-	    Initialiser la chaîne à $\VecTheta^{(0)}$ et choisir un noyau de transition $\mathcal{K}(\cdot, \cdot)$. A la i-ème itération et jusqu'à convergence:\\
-	    \begin{enumerate}
-	    	\item Tirer $\VecTheta^* \sim \mathcal{K}(\VecTheta^{(i-1)},\VecTheta^*)$
-	    	\item Calculer $r = \text{min }\left\{1, \dfrac{\pi(\VecTheta^*)\mathcal{K}(\VecTheta^*,\VecTheta^{(i-1)})}{\pi(\VecTheta^{(i-1)})\mathcal{K}(\VecTheta^{(i-1)},\VecTheta)}\right\}$
-	    	\item Accepter $\VecTheta^{(i)} = \VecTheta$ avec la probabilité $r$. Si rejet, garder $\VecTheta^{(i)} = \VecTheta^{(i-1)}$	    	
-	    \end{enumerate}
-    \end{algorithme}
-	
-\end{frame}
+%\begin{frame}
+%	\frametitle{MCMC}
+%	\begin{block}{Markov Chain Monte-Carlo (MCMC)}
+%		Méthodes de construction d'une chaîne de Markov dont la distribution stationnaire est la loi cible $\pi$.
+%	\end{block}
+%	
+%	Approches classiques:
+%	\begin{itemize}
+%		\item algorithme de Metropolis-Hastings
+%		\item échantillonneur de Gibbs
+%	\end{itemize}
+%	
+%    \begin{algorithme}[Exemple: Metropolis-Hastings (MH)\\]
+%	    Initialiser la chaîne à $\VecTheta^{(0)}$ et choisir un noyau de transition $\mathcal{K}(\cdot, \cdot)$. A la i-ème itération et jusqu'à convergence:\\
+%	    \begin{enumerate}
+%	    	\item Tirer $\VecTheta^* \sim \mathcal{K}(\VecTheta^{(i-1)},\VecTheta^*)$
+%	    	\item Calculer $r = \text{min }\left\{1, \dfrac{\pi(\VecTheta^*)\mathcal{K}(\VecTheta^*,\VecTheta^{(i-1)})}{\pi(\VecTheta^{(i-1)})\mathcal{K}(\VecTheta^{(i-1)},\VecTheta)}\right\}$
+%	    	\item Accepter $\VecTheta^{(i)} = \VecTheta$ avec la probabilité $r$. Si rejet, garder $\VecTheta^{(i)} = \VecTheta^{(i-1)}$	    	
+%	    \end{enumerate}
+%    \end{algorithme}
+%	
+%\end{frame}
 
 % =====  MCMC (2)  ================================================================
-\begin{frame}
-	\frametitle{MCMC}
-	MH sur un mélange de gaussiennes: {\small $\pi(\VecTheta) = \gamma\mathcal{N}(\VecTheta|\mu_1, \sigma_1^2) + (1-\gamma)\mathcal{N}(\VecTheta | \mu_2, \sigma_2^2)$}
-	\begin{columns}
-		\column{0.8\linewidth}
-			\begin{figure}
-				\only<1>{
-				\includegraphics[width=0.75\textwidth]{mh_1}
-				}
-				\only<2>{
-					\includegraphics[width=0.75\textwidth]{mh_2}
-				}
-				\only<3>{
-					\includegraphics[width=0.75\textwidth]{mh_3}
-				}
-			\end{figure}
-		\column{0.2\linewidth}
-{\small 			$\gamma = 0.3$\\
-			$\mu_1 = -20$\\
-			$\sigma_1 = 10$\\
-			$\mu_2 = 20$\\
-			$\sigma_2 = 10$\\}
-	\end{columns}
-	\begin{itemize}
+%\begin{frame}
+%	\frametitle{MCMC}
+%	MH sur un mélange de gaussiennes: {\small $\pi(\VecTheta) = \gamma\mathcal{N}(\VecTheta|\mu_1, \sigma_1^2) + (1-\gamma)\mathcal{N}(\VecTheta | \mu_2, \sigma_2^2)$}
+%	\begin{columns}
+%		\column{0.8\linewidth}
+%			\begin{figure}
+%				\only<1>{
+%				\includegraphics[width=0.75\textwidth]{mh_1}
+%				}
+%				\only<2>{
+%					\includegraphics[width=0.75\textwidth]{mh_2}
+%				}
+%				\only<3>{
+%					\includegraphics[width=0.75\textwidth]{mh_3}
+%				}
+%			\end{figure}
+%		\column{0.2\linewidth}
+%{\small 			$\gamma = 0.3$\\
+%			$\mu_1 = -20$\\
+%			$\sigma_1 = 10$\\
+%			$\mu_2 = 20$\\
+%			$\sigma_2 = 10$\\}
+%	\end{columns}
+%	\begin{itemize}
 %		\item<1>\textit{Bad mixing}: transitions trop {\color{red}faibles}
 %		\item<2>\textit{Bad mixing}: transitions trop {\color{red}grandes}
 %		\item<3>\textit{Good mixing}
-		\item<3> Performances liées aux choix du noyau et de l'initialisation !
-	\end{itemize}
-\end{frame}
+%		\item<3> Performances liées aux choix du noyau et de l'initialisation !
+%	\end{itemize}
+%\end{frame}
 
 % =====  MCMC (2)  ================================================================
+%\begin{frame}
+%	\frametitle{MCMC}
+%	
+%	Limitations de l'approche MCMC:
+%	\begin{itemize}
+%		\item états consécutifs corrélés: non-parallélisable
+%		\item perte d'une partie des échantillons générés (\textit{burn-in})
+%		\item MH: performances liées aux choix du noyau et de l'initialisation
+%		\item Gibbs: nécessite de connaître les lois conditionnelles de $\VecTheta$
+%	\end{itemize}
+%	
+%	
+%\end{frame}
+
+%% =====  IS (1)  ================================================================
+%\begin{frame}
+%	\frametitle{Echantillonnage d'importance}
+%	\begin{block}{Echantillonnage d'importance}
+%		\begin{enumerate}
+%			\item Définir une loi de proposition $\varphi(\VecTheta)$ à support inclus dans celui de $\pi$
+%			\item Tirer $\VecTheta \sim \varphi$
+%			\item Calculer les poids d'importance $w(\VecTheta) = \dfrac{\pi(\VecTheta)}{\varphi(\VecTheta)}$
+%		\end{enumerate}
+%	\end{block}
+%	
+%	Normalisation nécessaire si $\pi$ connu uniquement à une constante près:
+%	$$ \widetilde{w}(\VecTheta) = \dfrac{w^{(i)}(\VecTheta)}{\sum\limits_{i=1}^N w^{(i)}(\VecTheta)} $$
+%		
+%	On peut alors approximer la loi cible: 
+% $$ \pi(\VecTheta) \simeq \sum\limits_{i=1}^N \widetilde{w}(\VecTheta^{(i)})\delta_{\VecTheta^{(i)}}(\VecTheta) $$
+%\end{frame}
+%% =====  IS (2)  ================================================================
 \begin{frame}
-	\frametitle{MCMC}
+	\frametitle{Echantillonnage d'importance}
+	\begin{figure}
+			\centering
+			\includegraphics[width=0.8\textwidth]{is_vanilla}
+		\end{figure}
+{ 		Avantages:
+		\begin{itemize}
+			\item échantillons i.i.d.: traitement parallélisable
+			\item exploitation de tous les échantillons générés
+		\end{itemize}}
 \end{frame}
 
+\begin{frame}
+	\frametitle{Echantillonnage d'importance}
+		Inconvénients:
+		\begin{itemize}
+			\item performances fortement conditionnées par le choix de la loi de proposition !
+		\end{itemize}
+		\begin{figure}
+			\centering
+			\only<1>{
+				\includegraphics[width=0.6\textwidth]{is_vanilla_bad_10}
+				}
+			\only<2>{
+				\includegraphics[width=0.6\textwidth]{is_vanilla_bad_50}
+			}
+			\only<3>{
+				\includegraphics[width=0.6\textwidth]{is_vanilla_bad_100}
+			}
+			\only<4>{
+				\includegraphics[width=0.6\textwidth]{is_vanilla_bad_500}
+			}
+		\end{figure}
+\end{frame}
+%% =====  IS adaptatif  ================================================================
+\begin{frame}
+	\frametitle{Echantillonnage d'importance adaptatif}
+	Solution: adapter itérativement la loi de proposition $\varphi$
+	\begin{block}{Population Monte Carlo [Cappé et al., 2004]}
+		Introduction du concept d'adaptation par minimisation de : $$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta ~~~ \text{(divergence KL)} $$
+	\end{block}
+	
+	\begin{block}{D-kernel PMC [Douc et al., 2007]}
+		\begin{itemize}
+			\item Loi de proposition $\varphi_{\bm{\alpha}}$ $\Rightarrow$  mélange de noyaux fixes pondérés $\left\{(\alpha_d, \varphi_d)\right\}_{1\leq d \leq D} $:
+			$$ \varphi_{\bm{\alpha}}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta)$$
+			\item Optimisation des $\alpha_d$ par minimisation KL.
+		\end{itemize}
+	\end{block}
+\end{frame}
+\begin{frame}
+	\frametitle{Echantillonnage d'importance adaptatif}
+	
+	\begin{block}{M-PMC [Cappé et al., 2008]}
+		\begin{itemize}
+			\item Loi de proposition $\varphi_{(\bm{\alpha}, \bm{\nu})}$ $\Rightarrow$ mélange de noyaux paramétriques pondérés $\Big\{\Big(\alpha_d, \varphi_d(\cdot | \bm{\nu}_d)\Big)\Big\}_{1\leq d \leq D} $:
+			$$ \varphi_{(\bm{\alpha}, \bm{\nu})}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta | \bm{\nu}_d)$$
+			\item Optimisation des $\alpha_d$ et $\bm{\nu}_d$ par minimisation KL (algorithme EM).
+		\end{itemize}
+\end{block}
+Jusqu'ici: optimisation itérative seulement en fonction de l'itération précédente!
+\end{frame}
 
+%% =====  IS adaptatif (2)  ================================================================
+\begin{frame}
+	\frametitle{Echantillonnage d'importance adaptatif}
+	\begin{block}{Adaptive Multiple Importance Sampling (AMIS) [Cornuet et al., 2012]}
+		\begin{itemize}
+			\item Loi de proposition identique à celle du M-PMC
+			\item 		Ré-utilisation des particules de toutes les itérations pour:
+			\begin{itemize}
+				\item le calcul et recyclage de tous les poids d'importance,
+				\item l'optimisation des $\alpha_d$ et $\bm{\nu}_d$.
+			\end{itemize}
+		\end{itemize}
+	\end{block}
+	
+	\begin{columns}
+		\column{0.4\linewidth}
+				Avantages:
+				\begin{itemize}
+					\item utilisation efficace de tous les échantillons disponibles
+					\item convergence plus rapide vers la loi cible
+					\item variance d'erreur d'estimation réduite
+				\end{itemize}
+					\column{0.7\linewidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\textwidth]{mpmc_vs_amis}
+		\end{figure}
+	\end{columns}
+\end{frame}
+
+%% =====================================================================
 \section{Application au cas expérimental FFT07}
+%% =====================================================================
+\begin{frame}
+	\frametitle{L'expérience FFT07}
+	Campagne expérimentale:
+	\begin{itemize}
+		\item rejets de gaz traceur sur terrain instrumenté dans diverses configurations (période, météo, nombre de sources...)
+		\item création de données de référence pour validation d'algorithmes STE
+	\end{itemize} 
+	\begin{columns}
+		\column{0.7\linewidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.9\textwidth]{fft07_capteurs}
+			\end{figure}
+		\column{0.4\linewidth}
+			\begin{itemize}
+				\item {\small Restriction à $N_C = 25$ capteurs}
+				\item {\small Plage d'observations par capteur $T_C$ réduite (moyennage)}
+			\end{itemize}
+	\end{columns}
+\end{frame}
+%% =====================================================================
+\begin{frame}
+	\frametitle{Formalisation du problème STE}
+	Objectif: estimer les paramètres de position $\VecPosSource$ et d'émission $\VecQSource$ de la source pour une configuration donnée (\textit{trial}) de l'expérience FFT07.\\
+	Modèle de données: 
+	
+	$$ \VecObs = \MatC(\VecPosSource)\VecQSource + \VecErreur $$
+	
+	où:
+	\begin{itemize}
+		\item $\VecObs \in \mathbb{R}^{N_CT_C}$: observations concaténées par capteur
+		\item $\MatC(\VecPosSource) \in \mathbb{R}^{N_CT_C \times T_s}$: matrice source-récepteur construite avec un modèle de dispersion
+		\item $\VecQSource \in \mathbb{R}^{T_s}$: profil d'émission
+		\item $\VecErreur \in \mathbb{R}^{N_CT_C}$: erreurs (observation, modèle)
+	\end{itemize}
+\end{frame}
+%% =====================================================================
+\begin{frame}
+	\frametitle{Formalisation du problème STE}
+	\begin{figure}
+		\centering
+		\only<1>{
+			\includegraphics[width=0.99\textwidth]{data_model_initial}
+		}
+		\only<2>{
+			\includegraphics[width=0.99\textwidth]{data_model_step_1}
+		}
+		\only<3>{
+			\includegraphics[width=0.99\textwidth]{data_model_step_2}
+		}
+		\only<4>{
+			\includegraphics[width=0.99\textwidth]{data_model_step_3}
+		}
+		\only<5>{
+			\includegraphics[width=0.99\textwidth]{data_model_step_4}
+		}
+		\only<6>{
+			\includegraphics[width=0.99\textwidth]{data_model_step_5}
+		}
+		\only<7>{
+			\includegraphics[width=0.99\textwidth]{data_model_step_6}
+		}
+		\only<8>{
+			\includegraphics[width=0.99\textwidth]{data_model_step_7}
+		}
+	\end{figure}
+\end{frame}
+	
+	
+
+
 \begin{frame}
 	(vide)
 \end{frame}

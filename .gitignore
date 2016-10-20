@@ -1,6 +1,7 @@
 ## Custom folders:
 examples/*
 glouppe/*
+.ipynb_checkpoints/*
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

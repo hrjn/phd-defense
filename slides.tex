@@ -1,6 +1,7 @@
 \documentclass{beamer}
 
 
+
 \usepackage[utf8]{inputenc}
 \usepackage[frenchb]{babel}
 \usepackage{verbatim}
@@ -13,6 +14,9 @@
 \usepackage{amsfonts}
 \usepackage{mathtools}
 \usepackage{bm}
+\usepackage{tikz}
+	\usetikzlibrary{shapes,arrows}
+
 
 \usetheme{boxes}
 \usefonttheme[onlymath]{serif}
@@ -34,6 +38,25 @@
 	\setbeamertemplate{itemize item}{\color{red!40!black}$\blacktriangleright$}
 	\begin{block}{#2}\textbf{#1}}{\end{block}}
 
+\newenvironment<>{redblock}[1]{%
+	\setbeamercolor{block title}{fg=white,bg=red!40!black}%
+	\setbeamercolor{block body}{fg=black,bg=red!10}
+	\setbeamertemplate{itemize item}{\color{red!40!black}$\blacktriangleright$}
+	\begin{block}#2{\small \textbf{#1}}}{\end{block}}
+
+\newenvironment<>{blueblock}[1]{%
+	\setbeamercolor{block title}{fg=white,bg=blue!40!black}%
+	\setbeamercolor{block body}{fg=black,bg=blue!10}
+	\setbeamertemplate{itemize item}{\color{blue!40!black}$\blacktriangleright$}
+	\begin{block}#2{\small \textbf{#1}}}{\end{block}}
+
+\newenvironment<>{greenblock}[1]{%
+	\setbeamercolor{block title}{fg=white,bg=green!40!black}%
+	\setbeamercolor{block body}{fg=black,bg=green!10}
+	\setbeamertemplate{itemize item}{\color{green!40!black}$\blacktriangleright$}
+	\begin{block}#2{\small \textbf{#1}}}{\end{block}}
+
+
 \newtheorem{algorithme}{Algorithme}
 \newenvironment<>{algorithme}[1][]{%
 	\setbeamercolor{block title}{fg=white,bg=green!40!black}%
@@ -42,12 +65,21 @@
 	\setbeamercolor{enumerate item}{fg=black}
 	\begin{block}{#2}\textbf{#1}}{\end{block}}
 
+
+
 \newcommand{\VecQSource}{{\bm{q}}}
 \newcommand{\VecPosSource}{{\bm{x_s}}}
 \newcommand{\VecTheta}{{\bm{\theta}}}
 \newcommand{\VecObs}{{\bm{\eta}}}
 \newcommand{\MatC}{{\bm{C}}}
 \newcommand{\VecErreur}{{\bm{\varepsilon}}}
+\newcommand{\MatSigma}{{\bm{\Sigma}}}
+\newcommand{\MatI}{{\bm{I}}}
+\newcommand{\VecMeanQ}{{\bm{\mu}_q}}
+\newcommand{\MatCovQ}{{\bm{\Sigma}_q}}
+\newcommand{\PostMeanQ}{{\widetilde{\bm{\mu}}_q}}
+\newcommand{\PostCovQ}{{\widetilde{\bm{\Sigma}}_q}}
+\newcommand{\VecMu}{{\bm{\mu}}}
 
 
 
@@ -68,6 +100,10 @@
 \date{Lille \\ 21 novembre 2016}
 
 \begin{document}
+	
+	
+	
+	
 \AtBeginSection[]
 {
 	\begin{frame}
@@ -143,9 +179,9 @@
 
 \begin{frame}
 	\frametitle{Dispersion atmosphérique}
-	\begin{block}{Modèle de dispersion}
+	\begin{blueblock}{Modèle de dispersion}
 		Outil de calcul numérique permettant de simuler la propagation dans l'atmosphère d'un rejet de polluant.
-	\end{block}
+	\end{blueblock}
 	
 	
 	Typologie des modèles selon:
@@ -218,12 +254,12 @@
 		\item {\color{red} estimation disjointe de la position et du profil d'émission.}
 	\end{itemize}
 	
-    \begin{important}[Problématique:]
+    \begin{redblock}{Problématique}
     	\begin{itemize}
     		\item Développer une méthode bayésienne pour estimer la localisation \textbf{et} le profil d'émission d'une source.
     		\item Coupler cette méthode avec un modèle de dispersion atmosphérique dans une chaîne de calcul opérationnelle.
     	\end{itemize}
-    \end{important}
+    \end{redblock}
 \end{frame}
 % ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 % ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -237,14 +273,14 @@
 		\item $\VecTheta ~\Rightarrow$ paramètres du terme source
 		\item $\VecObs ~ \Rightarrow$ mesures de concentration observées
 	\end{itemize}
-	\begin{block}{\textbf{Règle de Bayes}}
+	\begin{blueblock}{Règle de Bayes}
 		$$ \pi(\VecTheta) = p(\VecTheta | \VecObs) = \dfrac{p(\VecTheta)p(\VecObs|\VecTheta)}{p(\VecObs)} \propto p(\VecTheta)p(\VecObs|\VecTheta) $$
 		\begin{itemize}
 			\item loi a posteriori $\pi(\VecTheta)$: information sur $\VecTheta$ connaissant $\VecObs$,
 			\item loi a priori $p(\VecTheta)$: information préalable sur $\VecTheta$,
 			\item vraisemblance $p(\VecObs | \VecTheta)$: probabilité d'observer $\VecObs$ pour $\VecTheta$ fixé.
 		\end{itemize}
-		\end{block}
+		\end{blueblock}
 \end{frame}
 % =====  Méthodes MC  ================================================================
 
@@ -255,7 +291,7 @@
 	
 	 $\Rightarrow$ recours à des méthodes d'approximation numérique
 	
-	\begin{block}{\textbf{Méthodes de Monte-Carlo}}
+	\begin{blueblock}{Méthodes de Monte-Carlo}
 		Permettent d'approximer l'espérance de toute fonction d'une variable aléatoire  de loi $\pi$ en échantillonnant depuis cette loi:
 %		\begin{equation*}
 %			\begin{split}
@@ -264,7 +300,7 @@
 %			\end{split}
 %		\end{equation*}
 		$$ \mathbb{E}_{\pi}[f(\VecTheta)] = \int f(\VecTheta)\pi(\VecTheta)d\VecTheta \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}f(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi $$
-	\end{block}
+	\end{blueblock}
 	
 	\item Obtention d'estimateurs bayésiens par simulation (ex: poser $f(\VecTheta) = \VecTheta$ pour le MMSE\footnote{Minimum Mean Square Estimator}).
 	
@@ -428,35 +464,35 @@
 \begin{frame}
 	\frametitle{Echantillonnage d'importance adaptatif}
 	Solution: adapter itérativement la loi de proposition $\varphi$
-	\begin{block}{Population Monte Carlo [Cappé et al., 2004]}
+	\begin{blueblock}{Population Monte Carlo [Cappé et al., 2004]}
 		Introduction du concept d'adaptation par minimisation de : $$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta ~~~ \text{(divergence KL)} $$
-	\end{block}
+	\end{blueblock}
 	
-	\begin{block}{D-kernel PMC [Douc et al., 2007]}
+	\begin{blueblock}{D-kernel PMC [Douc et al., 2007]}
 		\begin{itemize}
 			\item Loi de proposition $\varphi_{\bm{\alpha}}$ $\Rightarrow$  mélange de noyaux fixes pondérés $\left\{(\alpha_d, \varphi_d)\right\}_{1\leq d \leq D} $:
 			$$ \varphi_{\bm{\alpha}}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta)$$
 			\item Optimisation des $\alpha_d$ par minimisation KL.
 		\end{itemize}
-	\end{block}
+	\end{blueblock}
 \end{frame}
 \begin{frame}
 	\frametitle{Echantillonnage d'importance adaptatif}
 	
-	\begin{block}{M-PMC [Cappé et al., 2008]}
+	\begin{blueblock}{M-PMC [Cappé et al., 2008]}
 		\begin{itemize}
 			\item Loi de proposition $\varphi_{(\bm{\alpha}, \bm{\nu})}$ $\Rightarrow$ mélange de noyaux paramétriques pondérés $\Big\{\Big(\alpha_d, \varphi_d(\cdot | \bm{\nu}_d)\Big)\Big\}_{1\leq d \leq D} $:
 			$$ \varphi_{(\bm{\alpha}, \bm{\nu})}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta | \bm{\nu}_d)$$
 			\item Optimisation des $\alpha_d$ et $\bm{\nu}_d$ par minimisation KL (algorithme EM).
 		\end{itemize}
-\end{block}
+\end{blueblock}
 Jusqu'ici: optimisation itérative seulement en fonction de l'itération précédente!
 \end{frame}
 
 %% =====  IS adaptatif (2)  ================================================================
 \begin{frame}
 	\frametitle{Echantillonnage d'importance adaptatif}
-	\begin{block}{Adaptive Multiple Importance Sampling (AMIS) [Cornuet et al., 2012]}
+	\begin{blueblock}{Adaptive Multiple Importance Sampling (AMIS) [Cornuet et al., 2012]}
 		\begin{itemize}
 			\item Loi de proposition identique à celle du M-PMC
 			\item 		Ré-utilisation des particules de toutes les itérations pour:
@@ -465,7 +501,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 				\item l'optimisation des $\alpha_d$ et $\bm{\nu}_d$.
 			\end{itemize}
 		\end{itemize}
-	\end{block}
+	\end{blueblock}
 	
 	\begin{columns}
 		\column{0.4\linewidth}
@@ -493,20 +529,44 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\item rejets de gaz traceur sur terrain instrumenté dans diverses configurations (période, météo, nombre de sources...)
 		\item création de données de référence pour validation d'algorithmes STE
 	\end{itemize} 
-	\begin{columns}
-		\column{0.7\linewidth}
+
 			\begin{figure}
 				\centering
-				\includegraphics[width=0.9\textwidth]{fft07_capteurs}
+				\includegraphics[width=0.65\textwidth]{fft07_capteurs}
 			\end{figure}
-		\column{0.4\linewidth}
-			\begin{itemize}
-				\item {\small Restriction à $N_C = 25$ capteurs}
-				\item {\small Plage d'observations par capteur $T_C$ réduite (moyennage)}
-			\end{itemize}
-	\end{columns}
+
 \end{frame}
 %% =====================================================================
+
+\begin{frame}
+	\frametitle{L'expérience FFT07}
+	Caractéristiques des cas étudiés:
+				\begin{itemize}
+					\item  restriction à $N_C = 25$ capteurs proches de la source
+					\item  $T_C$ instants d'observations moyennées sur fenêtres de 10s
+					\item capteurs et source à même altitude: $\VecPosSource \in \mathbb{R}^2$
+					\item rejet non-instantané, conditions atmosphériques stables
+					\item étude avec données simulées et observations réelles
+				\end{itemize}
+	\begin{columns}
+		\column[]{0.5\linewidth}
+		Modèle de dispersion gaussien à bouffées:
+		\begin{itemize}
+			\item implémentation simple
+			\item temps de calcul faibles
+			\item émissions non-instantanées
+			\item variabilité météorologique
+		\end{itemize}
+		\column[]{0.5\linewidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.75\textwidth]{gaussian_puff}
+			\end{figure}
+	\end{columns}
+\end{frame}
+
+%% =====================================================================
+
 \begin{frame}
 	\frametitle{Formalisation du problème STE}
 	Objectif: estimer les paramètres de position $\VecPosSource$ et d'émission $\VecQSource$ de la source pour une configuration donnée (\textit{trial}) de l'expérience FFT07.\\
@@ -553,19 +613,128 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		}
 	\end{figure}
 \end{frame}
-	
-	
-
-
+%% ======= ==============================================================
 \begin{frame}
-	(vide)
+	\frametitle{Démarche de résolution}
+	\begin{itemize}
+		\item Objectif: calculer la loi a posteriori $p(\VecPosSource, \VecQSource | \VecObs)$ 
+		\item Problème: source non-instantanée
+		\begin{itemize}
+			\item dimension $T_s + 2$ potentiellement élevée du vecteur de paramètres,
+			\item calcul coûteux pour une simulation Monte-Carlo.
+		\end{itemize}
+	\end{itemize}
+	\begin{greenblock}{Marginalisation du profil d'émission}
+		La loi a posteriori des paramètres de la source peut s'écrire comme:
+		$$p(\VecPosSource, \VecQSource | \VecObs) = p(\VecQSource | \VecPosSource, \VecObs)p(\VecPosSource | \VecObs) $$
+		\begin{itemize}
+			\item $p(\VecQSource | \VecPosSource, \VecObs)$: loi a posteriori conditionnelle de $\VecQSource$,
+			\item $p(\VecPosSource | \VecObs)$: loi a posteriori marginale de $\VecPosSource$.
+		\end{itemize} 
+	\end{greenblock}
 \end{frame}
-\section{Application avec modèle rétrograde aux cas simulés Beaune et Opéra}
+
+%% ======= ==============================================================
 \begin{frame}
-	(vide)
+	\frametitle{Démarche de résolution}
+	La marginalisation permet de n'échantillonner que les $\VecPosSource$:
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\textwidth]{bayesian_workflow_initial}
+	\end{figure}
 \end{frame}
-\section{Conclusions et perspectives}
+
+%% ======= ==============================================================
+
 \begin{frame}
-	(vide)
+	\frametitle{Loi conditionnelle de $\VecQSource$}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\textwidth]{bayesian_workflow_step_1}
+	\end{figure}
+\end{frame}
+%% ======= ==============================================================
+
+\begin{frame}
+	\frametitle{Loi conditionnelle de $\VecQSource$}
+	L'erreur sur $\VecObs$ est supposée gaussienne: $\VecErreur \sim \mathcal{N}(0, \sigma_{obs}^2\MatI)$  \\
+	$\Rightarrow$ la vraisemblance est gaussienne: 
+	$$ p(\VecObs | \VecPosSource, \VecQSource) = \prod_{i=1}^{N_c}\prod_{j=1}^{T_c} \mathcal{N}(\eta_{i,j} | \MatC_{i,j}(\VecPosSource)\VecQSource, \sigma_{obs}^2) $$
+	
+	\begin{greenblock}{A priori gaussien sur $\VecQSource$}
+		Dans ces conditions, si $p(\VecQSource) = \mathcal{N}(\VecQSource | \VecMeanQ, \MatCovQ)$ alors : 
+		$$ p(\VecQSource | \VecPosSource, \VecObs) = \mathcal{N}(\VecQSource | \PostMeanQ, \PostCovQ) $$
+		
+		avec $\PostMeanQ$ et $\PostCovQ$ obtenus analytiquement par résolution d'un système linéaire gaussien.
+	\end{greenblock}
+	
+{\small 	\begin{itemize}
+		\item hypothèse simplifiant la résolution du problème
+		\item souvent employée dans la littérature STE
+		\item {\color{lightred}perte potentielle de la positivité sur l'estimation de $\VecQSource$ !}
+	\end{itemize}}
+\end{frame}
+
+%% ======= ==============================================================
+
+\begin{frame}
+	\frametitle{Loi conditionnelle de $\VecQSource$}
+	\begin{greenblock}{Contrainte de positivité par troncature de la densité}
+		% Troncature sans changer la nature gaussienne de la PDF
+		Objectif: restreindre $p(\VecQSource | \VecPosSource, \VecObs)$ à des valeurs positives en conservant la nature gaussienne de la densité d'origine.
+		\begin{itemize}
+			\item assure la cohérence physique de la solution
+			\item {\color{lightred}rallonge le temps de calcul}
+			\item {\color{lightred}modifie potentiellement les valeurs initiales}
+		\end{itemize}
+	\end{greenblock}
+	
+	Exemples sur lois gaussiennes bivariées:
+	\begin{figure}
+		\centering
+		\begin{subfigure}[b]{0.31\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{contrainte_positivite_1}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[b]{0.31\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{contrainte_positivite_2}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[b]{0.31\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{contrainte_positivite_3}
+		\end{subfigure}
+	\end{figure}
+\end{frame}
+%% ======= ==============================================================
+
+\begin{frame}
+	\frametitle{Loi conditionnelle de $\VecQSource$}
+	\begin{figure}
+		\centering
+		\only<1>{
+			\includegraphics[width=1\textwidth]{bayesian_workflow_step_1_end}
+			}
+		\only<2>{
+			\includegraphics[width=1\textwidth]{bayesian_workflow_step_2}
+			}
+	\end{figure}
+\end{frame}
+%% ======= ==============================================================
+
+\begin{frame}
+	\frametitle{Loi a posteriori marginale de $\VecPosSource$}
+	On utilise l'AMIS pour calculer $p(\VecPosSource | \VecObs)$:
+	\begin{itemize}
+		\item génération d'un échantillon de $KN_p$ particules sur $K$ itérations,
+		\item loi de proposition: mélange de $D=4$ noyaux gaussiens, paramètres $(\alpha_d, \VecMu_d, \MatSigma_d)$ ajustés à chaque itération
+		\item initialisation "uniforme" sur le domaine
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1\textwidth]{initialisation_amis}
+	\end{figure}
 \end{frame}
 \end{document}

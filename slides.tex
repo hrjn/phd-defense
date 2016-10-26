@@ -728,13 +728,156 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\frametitle{Loi a posteriori marginale de $\VecPosSource$}
 	On utilise l'AMIS pour calculer $p(\VecPosSource | \VecObs)$:
 	\begin{itemize}
-		\item génération d'un échantillon de $KN_p$ particules sur $K$ itérations,
-		\item loi de proposition: mélange de $D=4$ noyaux gaussiens, paramètres $(\alpha_d, \VecMu_d, \MatSigma_d)$ ajustés à chaque itération
-		\item initialisation "uniforme" sur le domaine
+		\item génération d'un échantillon de $KN_p$ particules sur $K$ itérations
+		\item loi a priori $p(\VecPosSource)$ uniforme sur le domaine
+		\item loi de proposition $\varphi_{\alpha, \nu}$: 
+		\begin{itemize}
+			\item mélange de $D=4$ noyaux gaussiens
+			\item paramètres $\big(\alpha_d, \nu_d = \{\VecMu_d, \MatSigma_d\}\big)_{1\leq d \leq D}$ optimisés à chaque itération
+		\end{itemize} 
+		\item initialisation de  $\varphi_{\alpha, \nu}$: répartition homogène sur le domaine: 
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.75\textwidth]{initialisation_amis}
+			\end{figure}
 	\end{itemize}
+
+\end{frame}
+%% ======= ==============================================================
+
+\begin{frame}
+	\frametitle{Loi a posteriori marginale de $\VecPosSource$}
+	Fonctionnement de l'AMIS sur 1 itération:
 	\begin{figure}
 		\centering
-		\includegraphics[width=1\textwidth]{initialisation_amis}
+		\includegraphics[width=0.9\textwidth]{amis_workflow}
 	\end{figure}
 \end{frame}
+
+\begin{frame}
+	\frametitle{Loi conditionnelle de $\VecQSource$}
+	\begin{figure}
+		\centering
+			\includegraphics[width=1\textwidth]{bayesian_workflow_final}
+
+	\end{figure}
+\end{frame}
+%% =======
+
+%% ======= ==============================================================
+
+\begin{frame}
+	\frametitle{Résultats (observations simulées)}
+	Position estimée par l'AMIS pour un rejet non-instantané:
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{res_fft07_simu_position}
+	\end{figure}
+	\begin{columns}
+		\column[]{0.45\linewidth}
+			\begin{greenblock}{Estimateur MMSE (position)}
+			$$ \widehat{\VecPosSource} = \sum\limits_{k=1}^K\sum\limits_{i=1}^{N_p} \widetilde{w}_k^{(i)}\VecPosSource_k^{(i)}$$
+			\end{greenblock}
+
+		\column[]{0.55\linewidth}
+		
+		Contrainte de positivité: \\
+		\vspace{0.5cm}
+{\small 		\begin{tabular}{c|ccc}
+			\centering
+			&  $\bar{d}(\widehat{\VecPosSource}, \bm{x}_{s^T}) $ & $\sigma_{\widehat{x_s}}$ (m) & $\sigma_{\widehat{y_s}}$ (m)  \\ 
+			\hline 
+			Avec  &  $\leq 1$ & $0.9$  & $3.2$ \\
+			Sans & $10.44$ & $0.4$ & $1.0$
+		\end{tabular} 
+			}
+	\end{columns}
+
+\end{frame}
+
+
+%% ======= ==============================================================
+
+\begin{frame}
+	\frametitle{Résultats (observations simulées)}
+	\begin{greenblock}{Estimateur MMSE (profil émission)}
+		$$ \widehat{\VecQSource} = \sum\limits_{k=1}^K\sum\limits_{i=1}^{N_p} \widetilde{w}_k^{(i)} \widetilde{\VecMu}(\VecPosSource_k^{(i)}) $$		
+	\end{greenblock}
+	
+	Différents profils estimés, avec contrainte de positivité:
+	
+	\begin{figure}
+		\centering
+		\begin{subfigure}[b]{0.33\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{res_fft07_simu_q_1}
+			\caption*{non-instantané}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{res_fft07_simu_q_2}
+			\caption*{variable}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[b]{0.3\textwidth}
+			\centering
+			\includegraphics[width=\textwidth]{res_fft07_simu_q_3}
+			\caption*{continu}
+		\end{subfigure}
+	\end{figure}
+\end{frame}
+
+%% ======= ==============================================================
+
+\begin{frame}
+	\frametitle{Résultats (observations simulées)}
+	Comparaison de l'AMIS avec un algorithme MCMC : 
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.65\linewidth]{res_fft07_simu_mcmc}
+			\end{figure}
+					\centering
+{\begin{tabular}{c|ccc}
+
+				&  $\bar{d}(\widehat{\VecPosSource}, \bm{x}_{s^T}) $ & $\sigma_{\widehat{x_s}}$ (m) & $\sigma_{\widehat{y_s}}$ (m)  \\ 
+				\hline
+				AMIS & $\leq 1$ & $0.9$ & $3.2$ \\
+				MCMC & $22.7$ & $130$ & $95$
+			\end{tabular}}
+
+
+\end{frame}
+
+% ==============================================================
+
+\begin{frame}
+	\frametitle{Résultats (observations réelles)}
+		Comparaison de l'AMIS avec un algorithme MCMC : 
+	\begin{figure}
+		\centering
+			\includegraphics[width=0.8\textwidth]{res_fft07_reel_mcmc} \\
+			\vspace{0.6cm}
+			\includegraphics[width = 0.8\textwidth]{res_fft07_reel_q}
+	\end{figure}
+\end{frame}
+
+% ==============================================================
+
+\begin{frame}
+	\frametitle{Cas FFT07: conclusions}
+	
+Résultats publiés dans une revue internationale (\textit{Atmospheric Environment})
+
+\begin{itemize}
+	\item Bons résultats pour la localisation (simulé + réel)
+	\item Bonne estimation du profil d'émission (simulé)
+	\item Avantages par rapport au MCMC: convergence, précision
+	\vspace{0.5cm}
+	\item{\color{lightred} résultats approximatifs pour $\widehat{\VecQSource}$ sur données réelles}
+	\item charge de calcul concentrée sur la construction des $\MatC(\VecPosSource)$ \\ $\Rightarrow$ {\color{lightred}méthode coûteuse pour modèles plus complexes !}
+\end{itemize}
+
+\end{frame}
+
 \end{document}

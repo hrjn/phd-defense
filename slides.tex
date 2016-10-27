@@ -6,7 +6,7 @@
 \usepackage[frenchb]{babel}
 \usepackage{verbatim}
 \usepackage{graphicx}
-	\graphicspath{{figures/}}
+	\graphicspath{{figures/}{figures/beaune_rejet/}{figures/opera_rejet/}{figures/beaune_varobs/}}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{color}
@@ -16,6 +16,12 @@
 \usepackage{bm}
 \usepackage{tikz}
 	\usetikzlibrary{shapes,arrows}
+\usepackage{gensymb}
+\usepackage{animate}
+
+
+
+
 
 
 \usetheme{boxes}
@@ -34,7 +40,7 @@
 \newtheorem{important}{Important}
 \newenvironment<>{important}[1][]{%
 	\setbeamercolor{block title}{fg=white,bg=red!40!black}%
-	\setbeamercolor{block body}{fg=black,bg=red!10}
+	\setbeamercolor{block body}{fg=black,bg=gray!10}
 	\setbeamertemplate{itemize item}{\color{red!40!black}$\blacktriangleright$}
 	\begin{block}{#2}\textbf{#1}}{\end{block}}
 
@@ -54,6 +60,7 @@
 	\setbeamercolor{block title}{fg=white,bg=green!40!black}%
 	\setbeamercolor{block body}{fg=black,bg=green!10}
 	\setbeamertemplate{itemize item}{\color{green!40!black}$\blacktriangleright$}
+	\setbeamercolor{enumerate item}{fg=black}
 	\begin{block}#2{\small \textbf{#1}}}{\end{block}}
 
 
@@ -866,18 +873,464 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Cas FFT07: conclusions}
+	Résultats publiés dans une revue internationale:
+	\begin{important}
+		{\small 		\textit{"An adaptive Bayesian inference algorithm to estimate the parameters of a hazardous atmospheric release"} \\ Rajaona et al., Atmospheric Environment, 2015}
+	\end{important}
 	
-Résultats publiés dans une revue internationale (\textit{Atmospheric Environment})
+	\begin{itemize}
+		\item Bons résultats pour la localisation (simulé + réel)
+		\item Bonne estimation du profil d'émission (simulé)
+		\item Avantages par rapport au MCMC: convergence, précision
+		\vspace{0.5cm}
+		\item{\color{lightred} résultats approximatifs pour $\widehat{\VecQSource}$ sur données réelles}
+		\item charge de calcul concentrée sur la construction des $\MatC(\VecPosSource)$ \\ $\Rightarrow$ {\color{lightred}méthode coûteuse pour modèles plus complexes !}
+	\end{itemize}
+\end{frame}
 
-\begin{itemize}
-	\item Bons résultats pour la localisation (simulé + réel)
-	\item Bonne estimation du profil d'émission (simulé)
-	\item Avantages par rapport au MCMC: convergence, précision
-	\vspace{0.5cm}
-	\item{\color{lightred} résultats approximatifs pour $\widehat{\VecQSource}$ sur données réelles}
-	\item charge de calcul concentrée sur la construction des $\MatC(\VecPosSource)$ \\ $\Rightarrow$ {\color{lightred}méthode coûteuse pour modèles plus complexes !}
-\end{itemize}
+% ================================================================
+
+\section{Application avec modèle rétrograde aux cas simulés Beaune et Opéra}
+
+% ================================================================
+
+\begin{frame}
+	\frametitle{Nouveaux objectifs}
+	\begin{itemize}
+		\item Situation réalistes $\Rightarrow$ modèles de dispersion plus élaborés
+		
+		\item Temps de calcul fortement sensible à la complexité du modèle
+		
+	\end{itemize}
+	
+	Objectif: adapter et tester la méthodologie existante avec un modèle de dispersion réaliste en limitant les temps de calcul. 
+	
+\end{frame}
+
+% =================================================================
+
+\begin{frame}
+	\frametitle{Modélisation lagrangienne avec PMSS}
+	\begin{blueblock}{Dispersion lagrangienne}
+		Panache $\Rightarrow$ ensemble de "particules" porteuses d'une masse élémentaire de polluant
+	\end{blueblock}
+	
+	L'outil \textit{Parallel Micro-SWIFT-SPRAY} (PMSS) permet de:
+	\begin{columns}
+		\column[]{0.5\linewidth}
+{\small 			\begin{itemize}
+				\item simuler un champ de vent 3D (interpolation + conservation de masse):
+			\end{itemize}}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.45\textwidth]{swift_exemple}
+%				\caption*{{\footnotesize SWIFT}}
+			\end{figure}
+		\column[]{0.5\linewidth}
+{\small 			\begin{itemize}
+				\item calculer des champs de concentration:
+			\end{itemize}}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.45\textwidth]{spray_exemple}
+%				\caption*{{\footnotesize SPRAY}}
+			\end{figure}
+	\end{columns}
+	\vspace{0.07cm}
+	
+{\small 	\begin{itemize}
+		\item modélisation de phénomènes complexes
+		\item bon ratio performances/temps de calcul
+	\end{itemize}}
+\end{frame}
+
+% ===============================================================
+
+\begin{frame}
+	\frametitle{Couplage PMSS - estimation source}
+
+	Impossible d'utiliser la méthodologie actuelle:
+	\begin{itemize}
+		\item $KN_p$ appels au modèle pour $K$ itérations et $N_p$ particules AMIS par itération \\ $\Rightarrow$ temps de calcul excessif avec PMSS !
+		\item solution: diminuer $N_p$ ? \\
+		$\Rightarrow$ exploration moins efficace du domaine
+	\end{itemize}
+	
+	\vspace{1cm}
+	
+	Alternative: optimiser le mode de calcul des matrices source-récepteur
+\end{frame}
+
+% ================================================================
+
+\begin{frame}
+%	On découple la construction des matrices source-récepteur de la boucle itérative principale de l'AMIS. Comme ça, la vraisemblance se calcule directement, sans appel au modèle de dispersion.
+	\frametitle{Couplage PMSS - estimation source}
+	\begin{greenblock}{Solution proposée}
+		Pré-calcul des matrices $\MatC(\bm{x})$ en tout point $\bm{x}$ du domaine maillé, avec un modèle de dispersion rétrograde.
+	\end{greenblock}
+	
+	\onslide<1>{Approche normale:\\}
+	\onslide<2>{Approche optimisée avec pré-calcul:}
+	\begin{figure}
+		\centering
+		\only<1>{
+			\includegraphics[width=0.9\textwidth]{retrograde_workflow_step_1}
+		}
+		\only<2>{
+			\includegraphics[width=0.9\textwidth]{retrograde_workflow_step_2}
+		}
+	\end{figure}
+\end{frame}
+
+% ==================================================================
+
+\begin{frame}
+	\frametitle{Couplage PMSS -estimation source}
+	\begin{blueblock}{	Modèle de dispersion rétrograde}
+		Permet de construire un champ de rétro-concentrations $C^*$  en "inversant" le processus de dispersion:
+		\begin{itemize}
+			\item source $\rightarrow$ rétro-capteur
+			\item capteurs $\rightarrow$ rétro-sources
+			\item inversion du temps et de la direction du vent
+		\end{itemize}
+	\end{blueblock}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\textwidth]{dualite_direct_inverse}
+		\caption*{[Keats et al., 2007]}
+	\end{figure}
+
 
 \end{frame}
 
+% ===========================================================
+
+\begin{frame}
+	\frametitle{Couplage PMSS - estimation source}
+	
+	\begin{blueblock}{Dualité direct-rétrograde}
+		Pour un rejet localisé et instantané $(\VecPosSource, t_s)$ on a, au capteur $\bm{x}_{R_i}$ et à l'instant $t_{R_i}$:
+		$$ C(\bm{x}_{R_i}, t_{R_i}) = C^* (\VecPosSource, t_s) $$
+	\end{blueblock}
+	
+	
+	Avantages:
+	\begin{itemize}
+		\item module rétrograde RetroSPRAY directement intégré à PMSS
+		\item approche orientée récepteur: nombre de rétro-capteurs ($(N_xN_y$ mailles) supérieur au nombre $N_C$ de rétro-sources
+		\item optimisation des calculs: $T_s$ instances à $N_C$ rétro-sources ($N_xN_yT_s$ instances à $1$ source en mode direct)
+	\end{itemize}
+\end{frame}
+
+% ==========================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Beaune}
+	Objectif: valider l'approche avec modèle rétrograde sur un cas simple (milieu rural).
+	\begin{columns}
+		\column[]{0.5\linewidth}
+{\small 		\begin{itemize}
+			\item domaine: 6km $\times$ 6km
+			\item vent constant (330$\degree$, 1.5 m/s)
+			\item rejet long (45mn): fuite
+			\item $N_C$ = 25 capteurs
+		\end{itemize}}
+		\column[]{0.5\linewidth}
+%			\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{beaune-}{0}{23}
+
+	\end{columns}
+	
+\end{frame}
+
+% ============================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Beaune: résultats}
+	Estimation de la position et du profil d'émission:
+	\begin{figure}
+		\centering
+				\includegraphics[width=\textwidth]{beaune-position} \\
+				\includegraphics[width=0.45\textwidth]{beaune-q}
+	\end{figure}
+\end{frame}
+
+% ==============================================================
+%
+%\begin{frame}
+%	\frametitle{Cas simulé Beaune: résultats}
+%	\only<1>{Influence de la variance d'observation: $\sigma_{obs}^2 = 10^{-7}$}
+%	\only<2>{Influence de la variance d'observation: $\sigma_{obs}^2 = 5 \times 10^{-7}$}
+%	\only<3>{Influence de la variance d'observation: $\sigma_{obs}^2 = 10^{-6}$}
+%	\only<4>{Influence de la variance d'observation: $\sigma_{obs}^2 = 5 \times 10^{-6}$}
+%	\only<5>{Influence de la variance d'observation: $\sigma_{obs}^2 = 10^{-5}$}
+%	\only<6>{Influence de la variance d'observation: $\sigma_{obs}^2 = 5 \times 10^{-5}$}
+%	\begin{columns}
+%		\column[]{0.5\linewidth}
+%			\begin{figure}
+%				\centering
+%				\only<1>{\includegraphics[width=0.9\textwidth]{beaune_varobs_1_x}}
+%				\only<2>{\includegraphics[width=0.9\textwidth]{beaune_varobs_2_x}}
+%				\only<3>{\includegraphics[width=0.9\textwidth]{beaune_varobs_3_x}}
+%				\only<4>{\includegraphics[width=0.9\textwidth]{beaune_varobs_4_x}}
+%				\only<5>{\includegraphics[width=0.9\textwidth]{beaune_varobs_5_x}}
+%				\only<6>{\includegraphics[width=0.9\textwidth]{beaune_varobs_6_x}}
+%				\end{figure}
+%			\column[]{0.5\linewidth}
+%			\begin{figure}
+%				\centering
+%				\only<1>{\includegraphics[width=0.9\textwidth]{beaune_varobs_1_y}}
+%				\only<2>{\includegraphics[width=0.9\textwidth]{beaune_varobs_2_y}}
+%				\only<3>{\includegraphics[width=0.9\textwidth]{beaune_varobs_3_y}}
+%				\only<4>{\includegraphics[width=0.9\textwidth]{beaune_varobs_4_y}}
+%				\only<5>{\includegraphics[width=0.9\textwidth]{beaune_varobs_5_y}}
+%				\only<6>{\includegraphics[width=0.9\textwidth]{beaune_varobs_6_y}}
+%			\end{figure}
+%	\end{columns}
+%	\begin{figure}
+%			\centering
+%			\only<1>{\includegraphics[width=0.45\textwidth]{beaune_varobs_1_q}}
+%			\only<2>{\includegraphics[width=0.45\textwidth]{beaune_varobs_2_q}}
+%			\only<3>{\includegraphics[width=0.45\textwidth]{beaune_varobs_3_q}}
+%			\only<4>{\includegraphics[width=0.45\textwidth]{beaune_varobs_4_q}}
+%			\only<5>{\includegraphics[width=0.5\textwidth]{beaune_varobs_5_q}}
+%			\only<6>{\includegraphics[width=0.5\textwidth]{beaune_varobs_6_q}}
+%		\end{figure}
+%
+%\end{frame}
+% ===========================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Beaune: résultats}
+	Influence de $\sigma_{obs}^2$:
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{beaune_varobs_errors}
+	\end{figure}
+	
+	\begin{itemize}
+		\item "confiance" accordée aux observations $\VecObs$
+		\item observations simulées \\ $\Rightarrow$  erreur faible pour $\sigma_{obs}^2$ faible
+	\end{itemize}
+\end{frame}
+
+% =============================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Beaune: résultats}
+	Influence de $\MatSigma_q = \sigma_q^2 \MatI$:
+	\begin{columns}
+		\column[]{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_x}\\
+				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_y}
+			\end{figure}
+%			\begin{itemize}
+%				\item localisation variant sur l'axe du vent
+%			\end{itemize}
+		\column[]{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_q}
+			\end{figure}
+			\begin{itemize}
+				\item localisation variant sur l'axe du vent
+				\item $\sigma_q^2$ trop faible $\Rightarrow$ débit sous-estimé
+				\item $\sigma_q^2$ trop élevé $\Rightarrow$ débit surestimé
+			\end{itemize}
+	\end{columns}
+\end{frame}
+
+% ==============================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Beaune: résultats}
+	Influence du réseau de mesure:
+	\begin{itemize}
+		\item suppression du capteur le plus informatif
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{beaune_reseau_sansR8_position} \\
+		\includegraphics[width=0.45\textwidth]{beaune_reseau_sansR8_q}
+	\end{figure}
+\end{frame}
+
+% ===============================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Beaune: résultats}
+	Influence du réseau de mesure:
+	\begin{itemize}
+		\item passage de 25 à 9 capteurs
+	\end{itemize}
+	\only<1>{
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.45\textwidth]{reseau_25C}
+			\includegraphics[width=0.45\textwidth]{reseau_9C}
+		\end{figure}
+		}
+	\only<2>{
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.45\textwidth]{beaune_reseau_9C_x}
+			\includegraphics[width=0.45\textwidth]{beaune_reseau_9C_y}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\begin{subfigure}[b]{0.33\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{beaune_reseau_q1}
+			\end{subfigure}
+			\hfill
+			\begin{subfigure}[b]{0.3\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{beaune_reseau_q2}
+			\end{subfigure}
+			\hfill
+			\begin{subfigure}[b]{0.3\textwidth}
+				\centering
+				\includegraphics[width=\textwidth]{beaune_reseau_q3}
+			\end{subfigure}
+		\end{figure}
+		}
+\end{frame}
+
+% ==============================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Opéra}
+	Objectif: tester l'approche avec modèle rétrograde sur un cas difficile (urbain avec météo instationnaire)
+	\begin{columns}
+		\column[]{0.5\linewidth}
+		{\small 		\begin{itemize}
+				\item domaine: 808m $\times$ 882m
+				\item bascule de vent:
+				\begin{itemize}
+					\item 230$\degree$ $\rightarrow$ 180$\degree$ $\rightarrow$ 45$\degree$
+					\item vitesse constante (3 m/s)
+					\end{itemize}
+				\item rejet court (10mn)
+				\item $N_C$ = 10 capteurs
+			\end{itemize}}
+			\column[]{0.5\linewidth}
+%				\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{opera-}{0}{17}
+			
+		\end{columns}
+	\end{frame}
+	
+% ================================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Opéra}
+	Problème: complexité du cas d'étude \\ $\Rightarrow$ convergence impossible avec une configuration normale !
+	
+	\begin{greenblock}{Initialisation améliorée de la loi de proposition}
+		\begin{enumerate}
+			\item Utiliser le modèle rétrograde pour pondérer chaque point $(x_i, y_j)$ par une "probabilité de présence" $\widetilde{\omega}_{x_i, y_j}^{t_l}$, $~ 1\leq t_l \leq T_s$
+			\item Définir la distribution: 
+			$$p(\VecTheta | t_l, \VecObs) = \sum\limits_{i=1}^{N_x}\sum\limits_{j=1}^{N_y} \widetilde{\omega}_{x_i, y_j}^{t_l} \mathcal{U}_{[x_{i-1}, x_{i}] \times [y_{j-1},y_j]}(\VecTheta)$$
+			\item Adapter un mélange de noyaux gaussiens $\psi_{\alpha, \nu}$ à $p(\VecTheta | t_l, \VecObs) $ en minimisant la divergence  $D_{KL}(p(\VecTheta | t_l, \VecObs) || \psi_{\alpha, \nu})$.
+			\item Utiliser les paramètres adaptés de $\psi_{\alpha, \nu}$ pour initialiser $\varphi_{\alpha, \nu}$ dans l'algorithme AMIS.
+		\end{enumerate}
+	\end{greenblock}
+	
+\end{frame}
+
+% ================================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Opéra}
+	\begin{columns}
+		\column[]{0.5\linewidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\textwidth]{opera_carte_fitting}
+			\caption*{$p(\VecTheta | t_l, \VecObs) $}
+		\end{figure}
+		\column[]{0.5\linewidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.9\textwidth]{opera_resultat_fitting}
+			\caption*{$\psi_{\alpha, \nu}$ après adaptation}
+		\end{figure}
+	\end{columns}
+\end{frame}
+
+% ==================================================================
+
+\begin{frame}
+	\frametitle{Cas simulé Opéra: résultats}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{opera_resultats_position} \\
+		\includegraphics[width=0.45\textwidth]{opera_resultats_q}
+	\end{figure}
+\end{frame}
+
+% ==================================================================
+
+\begin{frame}
+	\frametitle{Cas simulés Beaune et Opéra: conclusions}
+	Résultats publiés dans une conférence internationale:
+	\begin{important}
+{\small 		\textit{"A Bayesian approach of the source term estimate coupling retro-dispersion computations with a Lagrangian particle dispersion model and the Adaptive Multiple Importance Sampling"} \\ Rajaona et al., HARMO17, 2016}
+	\end{important}
+	
+	\begin{itemize}
+		\item Amélioration du processus d'estimation: 
+		\begin{itemize}
+			\item couplage avec un modèle de dispersion réaliste (PMSS)
+			\item pré-calcul des $\MatC(\VecPosSource)$ $\Rightarrow$ temps de calcul raisonnable
+		\end{itemize}
+		\item Cas Beaune:
+		\begin{itemize}
+			\item bons résultats pour localisation et estimation du débit
+			\item influence des hyperparamètres $\sigma_{obs}^2$ et $\sigma_q^2$ \\
+			$\Rightarrow$ modèle bayésien hiérarchique?
+			\item importance du capteur le plus informatif
+		\end{itemize}
+		\item Cas Opéra:
+		\begin{itemize}
+			\item bons résultats avec l'initialisation optimisée de l'AMIS
+			\item optimisation du tirage des particules AMIS avec présence de bâtiments?
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+% ===============================================================
+\section{Conclusion et perspectives}
+% ===============================================================
+\begin{frame}
+	\frametitle{Conclusion et perspectives}
+	Résultats:
+	\begin{itemize}
+		\item méthodologie permettant une estimation simultanée de la localisation et du profil d'émission d'un rejet atmosphérique
+		\item validation de la méthode sur plusieurs cas-tests
+		\item couplage optimisé avec un modèle de dispersion réaliste \\
+		$\Rightarrow$ permet d'appréhender des situations complexes dans un temps de calcul raisonnable
+	\end{itemize}
+	
+	\vspace{0.6cm}
+	
+	Perspectives:
+	\begin{itemize}
+		\item test et validation sur un cas urbain expérimental
+		\item étude approfondie de l'impact des hyperparamètres
+		\item application au dimensionnement d'un réseau de capteurs
+		\item traitement séquentiel optimal des observations (algorithme SMC sampler)
+	\end{itemize}
+\end{frame}
+
+% =================================================================
+
+\begin{frame}
+	\begin{center}
+		Merci pour votre attention !
+	\end{center}
+\end{frame}
 \end{document}

@@ -101,10 +101,10 @@
 
 
 \title{Inférence bayésienne adaptative pour la reconstruction de source en dispersion atmosphérique}
-\author{Harizo Rajaona}
-\institute{Directeurs de thèse: Yves Delignon, François Septier}
+%\author{Harizo Rajaona}
+%\institute{Directeurs de thèse: Yves Delignon, François Septier}
 % Put logos here!
-\date{Lille \\ 21 novembre 2016}
+\date{21 novembre 2016}
 
 \begin{document}
 	
@@ -171,8 +171,8 @@
 	\frametitle{Contexte}
 	Outils de détection et d'évaluation du risque:
 	\begin{itemize}
-		\item<1-2>données d'observation (capteurs mesurant la concentration de polluant)
-		\item<2>outils de modélisation des phénomènes atmosphériques
+		\item données d'\textbf{observation} (capteurs mesurant la concentration de polluant)
+		\item outils de \textbf{modélisation} des phénomènes atmosphériques
 	\end{itemize}
 	\begin{figure}
 		\centering
@@ -200,7 +200,7 @@
 	Paramètres d'entrée:
 	\begin{itemize}
 		\item données météorologiques: vent (direction + vitesse), température, humidité, nébulosité, flux de rayonnement...
-		\item terme source: position, quantités émises, durée, substance émise...
+		\item \textbf{terme source}: position, quantités émises, durée, substance émise...
 	\end{itemize}
 \end{frame}
 
@@ -209,9 +209,9 @@
 	\frametitle{Terme source: définitions}
 	Hypothèses sur la nature de la source:
 	\begin{itemize}
-		\item localisée (représentée par un point géographique $\VecPosSource \in \mathbb{R}^3$),
-		\item unique (un seul point d'émission),
-		\item non-instantanée, avec un profil temporel d'émission: $$\VecQSource = \left(q(t'_1), q(t'_2), \cdots, q(t'_{T_s})\right)$$
+		\item \textbf{localisée} (représentée par un point géographique $\VecPosSource \in \mathbb{R}^3$),
+		\item \textbf{unique} (un seul point d'émission),
+		\item \textbf{non-instantanée}, avec un profil temporel d'émission: $$\VecQSource = \left(q(t'_1), q(t'_2), \cdots, q(t'_{T_s})\right)$$
 	\end{itemize}
 %	 vecteur $\VecQSource \in \mathbb{R}^{T_s} $:
 	\begin{columns}
@@ -244,7 +244,7 @@
 		\item rétro-transport,
 		\item résolution d'un système linéaire,
 		\item algorithmes évolutionnaires,
-		\item méthodes bayésiennes et simulation stochastique.
+		\item \textbf{méthodes bayésiennes et simulation stochastique}.
 	\end{itemize}
 \end{frame}
 
@@ -283,9 +283,9 @@
 	\begin{blueblock}{Règle de Bayes}
 		$$ \pi(\VecTheta) = p(\VecTheta | \VecObs) = \dfrac{p(\VecTheta)p(\VecObs|\VecTheta)}{p(\VecObs)} \propto p(\VecTheta)p(\VecObs|\VecTheta) $$
 		\begin{itemize}
-			\item loi a posteriori $\pi(\VecTheta)$: information sur $\VecTheta$ connaissant $\VecObs$,
-			\item loi a priori $p(\VecTheta)$: information préalable sur $\VecTheta$,
-			\item vraisemblance $p(\VecObs | \VecTheta)$: probabilité d'observer $\VecObs$ pour $\VecTheta$ fixé.
+			\item loi \textbf{a posteriori} $\pi(\VecTheta)$: information sur $\VecTheta$ connaissant $\VecObs$,
+			\item loi\textbf{ a priori }$p(\VecTheta)$: information préalable sur $\VecTheta$,
+			\item \textbf{vraisemblance} $p(\VecObs | \VecTheta)$: probabilité d'observer $\VecObs$ pour $\VecTheta$ fixé.
 		\end{itemize}
 		\end{blueblock}
 \end{frame}
@@ -470,7 +470,7 @@
 %% =====  IS adaptatif  ================================================================
 \begin{frame}
 	\frametitle{Echantillonnage d'importance adaptatif}
-	Solution: adapter itérativement la loi de proposition $\varphi$
+	\textbf{Solution}: adapter itérativement la loi de proposition $\varphi$
 	\begin{blueblock}{Population Monte Carlo [Cappé et al., 2004]}
 		Introduction du concept d'adaptation par minimisation de : $$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta ~~~ \text{(divergence KL)} $$
 	\end{blueblock}
@@ -488,8 +488,8 @@
 	
 	\begin{blueblock}{M-PMC [Cappé et al., 2008]}
 		\begin{itemize}
-			\item Loi de proposition $\varphi_{(\bm{\alpha}, \bm{\nu})}$ $\Rightarrow$ mélange de noyaux paramétriques pondérés $\Big\{\Big(\alpha_d, \varphi_d(\cdot | \bm{\nu}_d)\Big)\Big\}_{1\leq d \leq D} $:
-			$$ \varphi_{(\bm{\alpha}, \bm{\nu})}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta | \bm{\nu}_d)$$
+			\item Loi de proposition $\varphi_{\bm{\alpha}, \bm{\nu}}$ $\Rightarrow$ mélange de noyaux paramétriques pondérés $\Big\{\Big(\alpha_d, \varphi_d(\cdot | \bm{\nu}_d)\Big)\Big\}_{1\leq d \leq D} $:
+			$$ \varphi_{\bm{\alpha}, \bm{\nu}}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta | \bm{\nu}_d)$$
 			\item Optimisation des $\alpha_d$ et $\bm{\nu}_d$ par minimisation KL (algorithme EM).
 		\end{itemize}
 \end{blueblock}
@@ -576,7 +576,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Formalisation du problème STE}
-	Objectif: estimer les paramètres de position $\VecPosSource$ et d'émission $\VecQSource$ de la source pour une configuration donnée (\textit{trial}) de l'expérience FFT07.\\
+	\textbf{Objectif}: estimer les paramètres de position $\VecPosSource$ et d'émission $\VecQSource$ de la source pour une configuration donnée (\textit{trial}) de l'expérience FFT07.\\
+	\vspace{0.3cm}
 	Modèle de données: 
 	
 	$$ \VecObs = \MatC(\VecPosSource)\VecQSource + \VecErreur $$
@@ -584,7 +585,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	où:
 	\begin{itemize}
 		\item $\VecObs \in \mathbb{R}^{N_CT_C}$: observations concaténées par capteur
-		\item $\MatC(\VecPosSource) \in \mathbb{R}^{N_CT_C \times T_s}$: matrice source-récepteur construite avec un modèle de dispersion
+		\item $\MatC(\VecPosSource) \in \mathbb{R}^{N_CT_C \times T_s}$: \textbf{matrice source-récepteur} construite avec un modèle de dispersion
 		\item $\VecQSource \in \mathbb{R}^{T_s}$: profil d'émission
 		\item $\VecErreur \in \mathbb{R}^{N_CT_C}$: erreurs (observation, modèle)
 	\end{itemize}
@@ -624,8 +625,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 \begin{frame}
 	\frametitle{Démarche de résolution}
 	\begin{itemize}
-		\item Objectif: calculer la loi a posteriori $p(\VecPosSource, \VecQSource | \VecObs)$ 
-		\item Problème: source non-instantanée
+		\item \textbf{Objectif}: calculer la loi a posteriori $p(\VecPosSource, \VecQSource | \VecObs)$ 
+		\item \textbf{Problème}: source non-instantanée
 		\begin{itemize}
 			\item dimension $T_s + 2$ potentiellement élevée du vecteur de paramètres,
 			\item calcul coûteux pour une simulation Monte-Carlo.
@@ -688,7 +689,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\frametitle{Loi conditionnelle de $\VecQSource$}
 	\begin{greenblock}{Contrainte de positivité par troncature de la densité}
 		% Troncature sans changer la nature gaussienne de la PDF
-		Objectif: restreindre $p(\VecQSource | \VecPosSource, \VecObs)$ à des valeurs positives en conservant la nature gaussienne de la densité d'origine.
+		\textbf{Objectif}: restreindre $p(\VecQSource | \VecPosSource, \VecObs)$ à des valeurs positives en conservant la nature gaussienne de la densité d'origine.
 		\begin{itemize}
 			\item assure la cohérence physique de la solution
 			\item {\color{lightred}rallonge le temps de calcul}
@@ -742,7 +743,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			\item mélange de $D=4$ noyaux gaussiens
 			\item paramètres $\big(\alpha_d, \nu_d = \{\VecMu_d, \MatSigma_d\}\big)_{1\leq d \leq D}$ optimisés à chaque itération
 		\end{itemize} 
-		\item initialisation de  $\varphi_{\alpha, \nu}$: répartition homogène sur le domaine: 
+		\item initialisation de  $\varphi_{\alpha, \nu}$: répartition homogène sur le domaine 
 			\begin{figure}
 				\centering
 				\includegraphics[width=0.75\textwidth]{initialisation_amis}
@@ -757,7 +758,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	Fonctionnement de l'AMIS sur 1 itération:
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.9\textwidth]{amis_workflow}
+		\includegraphics[width=1\textwidth]{amis_workflow}
 	\end{figure}
 \end{frame}
 
@@ -903,7 +904,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		
 	\end{itemize}
 	
-	Objectif: adapter et tester la méthodologie existante avec un modèle de dispersion réaliste en limitant les temps de calcul. 
+	\textbf{Objectif}: adapter et tester la méthodologie existante avec un \textbf{modèle de dispersion réaliste} en limitant les temps de calcul. 
 	
 \end{frame}
 
@@ -951,14 +952,14 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 	Impossible d'utiliser la méthodologie actuelle:
 	\begin{itemize}
-		\item $KN_p$ appels au modèle pour $K$ itérations et $N_p$ particules AMIS par itération \\ $\Rightarrow$ temps de calcul excessif avec PMSS !
+		\item $KN_p$ appels au modèle pour $K$ itérations et $N_p$ particules AMIS par itération \\ $\Rightarrow$ {\color{lightred}temps de calcul excessif} avec PMSS !
 		\item solution: diminuer $N_p$ ? \\
-		$\Rightarrow$ exploration moins efficace du domaine
+		$\Rightarrow$ {\color{lightred}exploration moins efficace} du domaine
 	\end{itemize}
 	
 	\vspace{1cm}
 	
-	Alternative: optimiser le mode de calcul des matrices source-récepteur
+	\textbf{Alternative}: optimiser le mode de calcul des matrices source-récepteur
 \end{frame}
 
 % ================================================================
@@ -1019,7 +1020,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	Avantages:
 	\begin{itemize}
 		\item module rétrograde RetroSPRAY directement intégré à PMSS
-		\item approche orientée récepteur: nombre de rétro-capteurs ($(N_xN_y$ mailles) supérieur au nombre $N_C$ de rétro-sources
+		\item approche orientée récepteur: nombre de rétro-capteurs ($N_xN_y$ mailles) supérieur au nombre $N_C$ de rétro-sources
 		\item optimisation des calculs: $T_s$ instances à $N_C$ rétro-sources ($N_xN_yT_s$ instances à $1$ source en mode direct)
 	\end{itemize}
 \end{frame}
@@ -1028,17 +1029,17 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Cas simulé Beaune}
-	Objectif: valider l'approche avec modèle rétrograde sur un cas simple (milieu rural).
+	\textbf{Objectif}: valider l'approche avec modèle rétrograde sur un cas simple (milieu rural).
 	\begin{columns}
 		\column[]{0.5\linewidth}
 {\small 		\begin{itemize}
 			\item domaine: 6km $\times$ 6km
 			\item vent constant (330$\degree$, 1.5 m/s)
-			\item rejet long (45mn): fuite
+			\item rejet long (45mn)
 			\item $N_C$ = 25 capteurs
 		\end{itemize}}
 		\column[]{0.5\linewidth}
-%			\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{beaune-}{0}{23}
+			\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{beaune-}{0}{23}
 
 	\end{columns}
 	
@@ -1203,7 +1204,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Cas simulé Opéra}
-	Objectif: tester l'approche avec modèle rétrograde sur un cas difficile (urbain avec météo instationnaire)
+	\textbf{Objectif}: tester l'approche avec modèle rétrograde sur un cas difficile (urbain avec météo instationnaire)
 	\begin{columns}
 		\column[]{0.5\linewidth}
 		{\small 		\begin{itemize}
@@ -1217,7 +1218,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 				\item $N_C$ = 10 capteurs
 			\end{itemize}}
 			\column[]{0.5\linewidth}
-%				\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{opera-}{0}{17}
+				\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{opera-}{0}{17}
 			
 		\end{columns}
 	\end{frame}
@@ -1226,7 +1227,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Cas simulé Opéra}
-	Problème: complexité du cas d'étude \\ $\Rightarrow$ convergence impossible avec une configuration normale !
+	\textbf{Problème}: complexité du cas d'étude \\ $\Rightarrow$ {\color{lightred}convergence impossible} avec une configuration normale !
 	
 	\begin{greenblock}{Initialisation améliorée de la loi de proposition}
 		\begin{enumerate}
@@ -1307,7 +1308,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 % ===============================================================
 \begin{frame}
 	\frametitle{Conclusion et perspectives}
-	Résultats:
+	\textbf{Résultats}:
 	\begin{itemize}
 		\item méthodologie permettant une estimation simultanée de la localisation et du profil d'émission d'un rejet atmosphérique
 		\item validation de la méthode sur plusieurs cas-tests
@@ -1317,7 +1318,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	
 	\vspace{0.6cm}
 	
-	Perspectives:
+	\textbf{Perspectives}:
 	\begin{itemize}
 		\item test et validation sur un cas urbain expérimental
 		\item étude approfondie de l'impact des hyperparamètres

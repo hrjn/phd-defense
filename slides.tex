@@ -1,5 +1,13 @@
 \documentclass{beamer}
 
+%TODO: insert logos in title page, order:
+%1. CEA
+%2. CRIStAL
+%3. Telecom Lille
+%4. ARIA
+%TODO: transitions with "transparent unseen content"
+
+
 
 
 \usepackage[utf8]{inputenc}
@@ -24,9 +32,10 @@
 
 
 
+
 \usetheme{boxes}
 \usefonttheme[onlymath]{serif}
-\usecolortheme{beaver}
+\usecolortheme{whale}
 \beamertemplatenavigationsymbolsempty
 \setbeamertemplate{title page}[default][colsep=-4bp,rounded=true]
 \setbeamertemplate{sections/subsections in toc}[circle]
@@ -101,9 +110,13 @@
 
 
 \title{Inférence bayésienne adaptative pour la reconstruction de source en dispersion atmosphérique}
-%\author{Harizo Rajaona}
-%\institute{Directeurs de thèse: Yves Delignon, François Septier}
-% Put logos here!
+\author{Harizo RAJAONA}
+\institute{Directeur de thèse: François SEPTIER}
+% logo of my university
+\titlegraphic{
+	\centering
+	\includegraphics[width=0.65\textwidth]{logos_big}
+}
 \date{21 novembre 2016}
 
 \begin{document}
@@ -132,7 +145,7 @@
 % ===== Contexte (1) ================================================================
 \begin{frame}
 	\frametitle{Contexte}
-	Les rejets \textbf{NRBC}\footnote{Nucléaires, Radiologiques, Biologiques, Chimiques} dans l'atmosphère peuvent être d'origine:
+	Les rejets \textbf{NRBC}\footnote{\textbf{N}ucléaires, \textbf{R}adiologiques, \textbf{B}iologiques, \textbf{C}himiques} dans l'atmosphère peuvent être d'origine:
 	\begin{itemize}
 		\item accidentelle (fuite ou explosion sur un site industriel),
 		\item malveillante (actes terroristes)
@@ -187,7 +200,7 @@
 \begin{frame}
 	\frametitle{Dispersion atmosphérique}
 	\begin{blueblock}{Modèle de dispersion}
-		Outil de calcul numérique permettant de simuler la propagation dans l'atmosphère d'un rejet de polluant.
+		Outil de calcul numérique permettant, grâce à la résolution d'une équation d'advection-diffusion, de simuler la propagation dans l'atmosphère d'un rejet de polluant.
 	\end{blueblock}
 	
 	
@@ -229,8 +242,8 @@
 % =====  Terme source  ================================================================
 
 \begin{frame}
-	\frametitle{Terme source: estimation}
-	Reconstruire les paramètres d'un terme source (STE\footnote{Source Term Estimation}) à partir des observations est un problème inverse.
+	\frametitle{Terme source: estimation (principe)}
+	Reconstruire les paramètres d'un terme source (STE\footnote{\textit{\textbf{S}ource \textbf{T}erm \textbf{E}stimation}}) à partir des observations est un problème inverse.
 	
 	\begin{figure}
 		\centering
@@ -238,14 +251,31 @@
 		\vspace{0.5cm}
 		\includegraphics[width=0.75\textwidth]{modele_inverse}
 	\end{figure}
-	
-	Plusieurs approches de résolution possibles:
-	\begin{itemize}
-		\item rétro-transport,
-		\item résolution d'un système linéaire,
-		\item algorithmes évolutionnaires,
-		\item \textbf{méthodes bayésiennes et simulation stochastique}.
-	\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Terme source: estimation (état de l'art)}
+		
+		Approches existantes: 
+		\begin{itemize}
+			\item \textbf{rétro-transport}: étude de la forme duale des équations d'advection-diffusion 
+			\begin{itemize}
+				\item solution intuitive du problème physique
+				\item {\color{lightred}requiert un modèle rétrograde fiable}
+			\end{itemize}
+			\item \textbf{formulation linéaire du problème inverse}: minimisation d'une fonction-coût (éventuellement régularisée) sur un espace maillé dans le temps et l'espace
+			\begin{itemize}
+				\item implémentation simple 
+				\item {\color{lightred}dimension élevée, choix du maillage}
+			\end{itemize}
+			\item \textbf{algorithmes évolutionnaires}: sélection, croisements et mutations sur une population d'individus
+			\begin{itemize}
+				\item résolution de problèmes à forte complexité combinatoire
+				\item {\color{lightred}temps de calcul élevés, réglage des paramètres}
+			\end{itemize}
+			\item \textbf{ méthodes bayésiennes et simulation stochastique}: calcul d'une loi de probabilité a posteriori par échantillonnage
+		\end{itemize}
 \end{frame}
 
 
@@ -253,10 +283,10 @@
 
 \begin{frame}
 	\frametitle{Problématique de recherche}
-	On se concentre sur les méthodes bayésiennes:
+	On se concentre sur les \textbf{méthodes bayésiennes}:
 	\begin{itemize}
-		\item formalisme rigoureux pour estimation et quantification de l'incertitude,
-		\item exploitation d'un nombre limité de mesures (régularisation),
+		\item approche probabiliste permettant de \textbf{quantifier les incertitudes},
+		\item exploitation d'un nombre limité de mesures (\textbf{régularisation}),
 		\item {\color{red} temps de calcul potentiellement élevés,}
 		\item {\color{red} estimation disjointe de la position et du profil d'émission.}
 	\end{itemize}
@@ -294,12 +324,12 @@
 \begin{frame}
 	\frametitle{Inférence bayésienne}
 	\begin{itemize}
-	\item \textbf{Problème}: $p(\VecObs | \VecTheta)$  trop coûteuse (ou impossible) à calculer \\$\Rightarrow$ {\color{red} pas d'expression analytique pour $\pi(\VecTheta)$ ! } \\
+	\item \textbf{Problème}: {\color{red} impossible d'obtenir une expression analytique pour $\pi(\VecTheta)$ ! } \\
 	
 	 $\Rightarrow$ recours à des méthodes d'approximation numérique
 	
 	\begin{blueblock}{Méthodes de Monte-Carlo}
-		Permettent d'approximer l'espérance de toute fonction d'une variable aléatoire  de loi $\pi$ en échantillonnant depuis cette loi:
+		Permettent d'approximer l'espérance de toute fonction d'une variable aléatoire  de loi $\pi$ en échantillonnant sur cette loi:
 %		\begin{equation*}
 %			\begin{split}
 %				\mathbb{E}_{\pi}[\psi(\VecTheta)] &= \int \psi(\VecTheta)\pi(\VecTheta)d\VecTheta \\
@@ -309,7 +339,7 @@
 		$$ \mathbb{E}_{\pi}[f(\VecTheta)] = \int f(\VecTheta)\pi(\VecTheta)d\VecTheta \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}f(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi $$
 	\end{blueblock}
 	
-	\item Obtention d'estimateurs bayésiens par simulation (ex: poser $f(\VecTheta) = \VecTheta$ pour le MMSE\footnote{Minimum Mean Square Estimator}).
+	\item Obtention d'estimateurs bayésiens par simulation (ex: poser $f(\VecTheta) = \VecTheta$ pour le MMSE\footnote{\textit{\textbf{M}inimum \textbf{M}ean \textbf{S}quare \textbf{E}stimator}}).
 	
 	\end{itemize}
 \end{frame}
@@ -318,7 +348,7 @@
 	\frametitle{Méthodes d'échantillonnage}
 %	Plusieurs méthodes permettent d'échantillonner depuis la loi cible:
 	\begin{itemize}
-		\item Algorithmes \textbf{MCMC}\footnote{Markov Chain Monte Carlo}: $\pi$ est la distribution stationnaire d'une chaîne de Markov construite par itérations successives.
+		\item Algorithmes \textbf{MCMC}\footnote{\textit{\textbf{M}arkov \textbf{C}hain \textbf{M}onte \textbf{C}arlo}}: $\pi$ est la distribution stationnaire d'une chaîne de Markov construite par itérations successives.
 		\begin{itemize}
 			\item Metropolis-Hastings
 			\item échantillonneur de Gibbs
@@ -338,7 +368,7 @@
 			\item Gibbs: requiert les lois conditionnelles de $\VecTheta$
 		\end{itemize}
 		
-		\item Algorithmes \textbf{d'échantillonnage d'importance} (\textbf{IS}\footnote{Importance Sampling}): tirage d'une population d'échantillons pondérés (ou particules) à partir d'une loi de proposition.
+		\item Algorithmes \textbf{d'échantillonnage d'importance} (\textbf{IS}\footnote{\textit{\textbf{I}mportance \textbf{S}ampling}}): tirage d'une population d'échantillons pondérés (ou particules) à partir d'une loi de proposition.
 	\end{itemize}
 \end{frame}
 
@@ -440,7 +470,7 @@
 		\end{figure}
 { 		Avantages:
 		\begin{itemize}
-			\item échantillons i.i.d.: traitement parallélisable
+			\item échantillons i.i.d\footnote{\textbf{i}ndépendants \textbf{i}dentiquement \textbf{d}istribués}.: traitement parallélisable
 			\item exploitation de tous les échantillons générés
 		\end{itemize}}
 \end{frame}
@@ -449,7 +479,7 @@
 	\frametitle{Echantillonnage d'importance}
 		Inconvénients:
 		\begin{itemize}
-			\item performances fortement conditionnées par le choix de la loi de proposition !
+			\item {\color{lightred}performances fortement conditionnées par le choix de la loi de proposition !}
 		\end{itemize}
 		\begin{figure}
 			\centering
@@ -547,7 +577,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{L'expérience FFT07}
-	Caractéristiques des cas étudiés:
+	Caractéristiques des cas étudiés (\textit{trials} 7 et 30):
 				\begin{itemize}
 					\item  restriction à $N_C = 25$ capteurs proches de la source
 					\item  $T_C$ instants d'observations moyennées sur fenêtres de 10s
@@ -628,8 +658,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\item \textbf{Objectif}: calculer la loi a posteriori $p(\VecPosSource, \VecQSource | \VecObs)$ 
 		\item \textbf{Problème}: source non-instantanée
 		\begin{itemize}
-			\item dimension $T_s + 2$ potentiellement élevée du vecteur de paramètres,
-			\item calcul coûteux pour une simulation Monte-Carlo.
+			\item {\color{lightred}dimension $T_s + 2$ potentiellement élevée} du vecteur de paramètres,
+			\item {\color{lightred}calcul coûteux} pour une simulation Monte-Carlo.
 		\end{itemize}
 	\end{itemize}
 	\begin{greenblock}{Marginalisation du profil d'émission}
@@ -897,15 +927,13 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Nouveaux objectifs}
+	
 	\begin{itemize}
-		\item Situation réalistes $\Rightarrow$ modèles de dispersion plus élaborés
-		
-		\item Temps de calcul fortement sensible à la complexité du modèle
-		
+		\item Passer d'un contexte simple (terrain plat, météo stationnaire) à un environnement plus \textbf{complexe} (relief, bâtiments, météo instationnaire) \\
+		$\Rightarrow$ utiliser un \textbf{nouveau modèle de dispersion adapté à cette complexité}
+		\item Tester et valider la méthodologie sur des nouveaux cas-tests plus complexes 
 	\end{itemize}
-	
-	\textbf{Objectif}: adapter et tester la méthodologie existante avec un \textbf{modèle de dispersion réaliste} en limitant les temps de calcul. 
-	
+
 \end{frame}
 
 % =================================================================
@@ -971,7 +999,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		Pré-calcul des matrices $\MatC(\bm{x})$ en tout point $\bm{x}$ du domaine maillé, avec un modèle de dispersion rétrograde.
 	\end{greenblock}
 	
-	\onslide<1>{Approche normale:\\}
+	\onslide<1>{Première approche:\\}
 	\onslide<2>{Approche optimisée avec pré-calcul:}
 	\begin{figure}
 		\centering
@@ -1017,11 +1045,14 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{blueblock}
 	
 	
+	
 	Avantages:
 	\begin{itemize}
-		\item module rétrograde RetroSPRAY directement intégré à PMSS
-		\item approche orientée récepteur: nombre de rétro-capteurs ($N_xN_y$ mailles) supérieur au nombre $N_C$ de rétro-sources
-		\item optimisation des calculs: $T_s$ instances à $N_C$ rétro-sources ($N_xN_yT_s$ instances à $1$ source en mode direct)
+		\item modèle rétrograde directement intégré à PMSS (RetroSPRAY)
+		\item un seul calcul rétrograde par capteur
+		\item pré-calcul entièrement parallélisable
+		\item suppression des appels au modèle de dispersion pendant les itérations de l'AMIS
+
 	\end{itemize}
 \end{frame}
 
@@ -1029,7 +1060,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Cas simulé Beaune}
-	\textbf{Objectif}: valider l'approche avec modèle rétrograde sur un cas simple (milieu rural).
+	\textbf{Objectif}: valider l'approche avec modèle rétrograde sur un cas de synthèse en milieu rural (relief vallonné):
 	\begin{columns}
 		\column[]{0.5\linewidth}
 {\small 		\begin{itemize}
@@ -1040,6 +1071,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\end{itemize}}
 		\column[]{0.5\linewidth}
 			\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{beaune-}{0}{23}
+
 
 	\end{columns}
 	
@@ -1204,7 +1236,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Cas simulé Opéra}
-	\textbf{Objectif}: tester l'approche avec modèle rétrograde sur un cas difficile (urbain avec météo instationnaire)
+	\textbf{Objectif}: valider l'approche avec modèle rétrograde sur un cas difficile (urbain avec météo instationnaire)
 	\begin{columns}
 		\column[]{0.5\linewidth}
 		{\small 		\begin{itemize}
@@ -1221,51 +1253,54 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 				\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{opera-}{0}{17}
 			
 		\end{columns}
-	\end{frame}
-	
+			\textbf{Problème}: complexité du cas d'étude \\ $\Rightarrow$ {\color{lightred}convergence impossible} avec une initialisation uniforme !
+\end{frame}
+
 % ================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Opéra}
-	\textbf{Problème}: complexité du cas d'étude \\ $\Rightarrow$ {\color{lightred}convergence impossible} avec une configuration normale !
+
 	
-	\begin{greenblock}{Initialisation améliorée de la loi de proposition}
+	\begin{greenblock}{Initialisation améliorée de la loi de proposition (1/2)}
 		\begin{enumerate}
 			\item Utiliser le modèle rétrograde pour pondérer chaque point $(x_i, y_j)$ par une "probabilité de présence" $\widetilde{\omega}_{x_i, y_j}^{t_l}$, $~ 1\leq t_l \leq T_s$
 			\item Définir la distribution: 
 			$$p(\VecTheta | t_l, \VecObs) = \sum\limits_{i=1}^{N_x}\sum\limits_{j=1}^{N_y} \widetilde{\omega}_{x_i, y_j}^{t_l} \mathcal{U}_{[x_{i-1}, x_{i}] \times [y_{j-1},y_j]}(\VecTheta)$$
-			\item Adapter un mélange de noyaux gaussiens $\psi_{\alpha, \nu}$ à $p(\VecTheta | t_l, \VecObs) $ en minimisant la divergence  $D_{KL}(p(\VecTheta | t_l, \VecObs) || \psi_{\alpha, \nu})$.
-			\item Utiliser les paramètres adaptés de $\psi_{\alpha, \nu}$ pour initialiser $\varphi_{\alpha, \nu}$ dans l'algorithme AMIS.
+			
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.4\linewidth]{opera_carte_fitting}
+%				\caption*{$p(\VecTheta | t_l, \VecObs) $}
+			\end{figure}
 		\end{enumerate}
 	\end{greenblock}
-	
 \end{frame}
-
+	
 % ================================================================
-
 \begin{frame}
 	\frametitle{Cas simulé Opéra}
-	\begin{columns}
-		\column[]{0.5\linewidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.8\textwidth]{opera_carte_fitting}
-			\caption*{$p(\VecTheta | t_l, \VecObs) $}
-		\end{figure}
-		\column[]{0.5\linewidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.9\textwidth]{opera_resultat_fitting}
-			\caption*{$\psi_{\alpha, \nu}$ après adaptation}
-		\end{figure}
-	\end{columns}
+	\begin{greenblock}{Initialisation améliorée de la loi de proposition (2/2)}
+		\begin{enumerate}
+			\setcounter{enumi}{4}
+			\item Adapter un mélange de noyaux gaussiens $\psi_{\alpha, \nu}$ à $p(\VecTheta | t_l, \VecObs) $ en minimisant la divergence  $D_{KL}(p(\VecTheta | t_l, \VecObs) || \psi_{\alpha, \nu})$.
+			 \begin{figure}
+			 	\centering
+			 	\includegraphics[width=0.45\linewidth]{opera_resultat_fitting}
+			 \end{figure}
+			\item Utiliser les paramètres adaptés de $\psi_{\alpha, \nu}$ pour initialiser $\varphi_{\alpha, \nu}$ dans l'algorithme AMIS.
+		\end{enumerate}
+\end{greenblock}
 \end{frame}
+
+
+
 
 % ==================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Opéra: résultats}
-
+Avec initialisation améliorée:
 	\begin{figure}
 		\centering
 		\includegraphics[width=\textwidth]{opera_resultats_position} \\
@@ -1286,7 +1321,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\item Amélioration du processus d'estimation: 
 		\begin{itemize}
 			\item couplage avec un modèle de dispersion réaliste (PMSS)
-			\item pré-calcul des $\MatC(\VecPosSource)$ $\Rightarrow$ temps de calcul raisonnable
+			\item pré-calcul des $\MatC(\VecPosSource)$ $\Rightarrow$ temps de calcul raisonnable (< 5 minutes)
 		\end{itemize}
 		\item Cas Beaune:
 		\begin{itemize}
@@ -1310,20 +1345,27 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\frametitle{Conclusion et perspectives}
 	\textbf{Résultats}:
 	\begin{itemize}
-		\item méthodologie permettant une estimation simultanée de la localisation et du profil d'émission d'un rejet atmosphérique
-		\item validation de la méthode sur plusieurs cas-tests
-		\item couplage optimisé avec un modèle de dispersion réaliste \\
-		$\Rightarrow$ permet d'appréhender des situations complexes dans un temps de calcul raisonnable
+		\item Méthode permettant une \textbf{estimation simultanée} de la \textbf{localisation} et du \textbf{profil temporel d'émission} d'un rejet atmosphérique
+		\item \textbf{Validation} sur des cas-tests synthétiques et expérimentaux 
+		\item Couplage de la méthode avec un \textbf{modèle de dispersion complexe} \\
+		$\Rightarrow$ {\footnotesize permet d'appréhender des situations difficiles (relief, bâtiments, météo instationnaire) sans ralentir l'algorithme d'estimation}
+		\item \textbf{Optimisation de l'initialisation de l'AMIS} avec utilisation d'un modèle rétrograde \\
+		$\Rightarrow${\small  illustration de la complémentarité des approches déterministe et probabiliste}
 	\end{itemize}
-	
-	\vspace{0.6cm}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Conclusion et perspectives}
 	
 	\textbf{Perspectives}:
 	\begin{itemize}
-		\item test et validation sur un cas urbain expérimental
-		\item étude approfondie de l'impact des hyperparamètres
-		\item application au dimensionnement d'un réseau de capteurs
-		\item traitement séquentiel optimal des observations (algorithme SMC sampler)
+		\item Test et validation sur un cas urbain expérimental:\\
+		$\Rightarrow$ {\small Mock Urban Setting (MUST), Joint Urban 2003 ...}
+		\item Etude approfondie de l'impact des hyperparamètres
+		\item Application au dimensionnement d'un réseau de capteurs:\\
+			$\Rightarrow$ {\small recherche de la topologie optimale pour un problème STE}
+		\item Traitement séquentiel des observations:\\
+			$\Rightarrow$ {\small évaluer une séquence de distributions a posteriori en ré-utilisant l'information des particules existantes (SMC\footnote{\textit{\textbf{S}equential \textbf{M}onte \textbf{C}arlo}} \textit{sampler})}
 	\end{itemize}
 \end{frame}
 

@@ -1,7 +1,10 @@
 ## Custom folders:
+*.swp
+*.pages
 examples/*
 glouppe/*
 .ipynb_checkpoints/*
+figures/tmp/*
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

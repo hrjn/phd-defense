@@ -374,37 +374,38 @@
 \begin{frame}
 	\frametitle{Inférence bayésienne}
 	\uncover<1->{
-\textbf{Problème}: {\color{red} impossible d'obtenir une expression analytique pour $\pi(\VecTheta)$ ! } \\
-}
-\uncover<2->{
+		Connaissance de $\pi(\VecTheta)$ $\Rightarrow$ construction d'estimateurs statistiques, exemple de la moyenne a posteriori:
+					$$ \mathbb{E}_{\pi}[\VecTheta] = \int \VecTheta \pi(\VecTheta) d\VecTheta $$
+		}
+	\uncover<2->{
+		\textbf{Problème}: {\color{red} impossible d'obtenir une expression analytique pour $\pi(\VecTheta)$ ! \\
+			
+			}
+	}
+%	
+\uncover<3->{
 	 $\Rightarrow$ recours à des méthodes d'approximation numérique
 }
-\uncover<3->{
+\uncover<4->{
 	\begin{blueblock}{Méthodes de Monte-Carlo}
 		 \textbf{Objectif}: approcher l'espérance de toute fonction d'une variable aléatoire  de loi $\pi$ en échantillonnant sur cette loi:
-%		\begin{equation*}
-%			\begin{split}
-%				\mathbb{E}_{\pi}[\psi(\VecTheta)] &= \int \psi(\VecTheta)\pi(\VecTheta)d\VecTheta \\
-%				& \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}\psi(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi
-%			\end{split}
-%		\end{equation*}
-		$$ \mathbb{E}_{\pi}[f(\VecTheta)] = \int f(\VecTheta)\pi(\VecTheta)d\VecTheta \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}f(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \sim \pi $$
+		$$ \mathbb{E}_{\pi}[f(\VecTheta)] = \int f(\VecTheta)\pi(\VecTheta)d\VecTheta \simeq \dfrac{1}{N} \sum\limits_{i=1}^{N}f(\theta^{(i)}), ~ ~ ~ \theta^{(i)} \overset{\text{i.i.d.}}{\sim}   \pi $$
 	\end{blueblock}
 }
-	\uncover<4->{
-	$\Rightarrow$ construction par simulation d'estimateurs, exemple du MMSE\footnote{\textit{\textbf{M}inimum \textbf{M}ean \textbf{S}quare \textbf{E}stimator}}:
-		$$ \mathbb{E}_{\pi}[\VecTheta] = \int \VecTheta p(\VecTheta | \VecObs) d\VecTheta $$
+	\uncover<5->{
+	\textbf{Problème}: tirage direct depuis $\pi$ impossible ! \\
+	$\Rightarrow$ utiliser des lois plus simples
 	}
-	
 
 \end{frame}
 
 \begin{frame}
 	\frametitle{Méthodes d'échantillonnage}
 %	Plusieurs méthodes permettent d'échantillonner depuis la loi cible:
+{\small 
 	\begin{itemize}
 		\uncover<1-4>{
-		\item Algorithmes \textbf{MCMC}\footnote{\textit{\textbf{M}arkov \textbf{C}hain \textbf{M}onte \textbf{C}arlo}}: $\pi$ est la distribution stationnaire d'une chaîne de Markov construite par itérations successives.
+		\item \textbf{Markov Chain Monte Carlo} (MCMC): $\pi$ est la distribution stationnaire d'une chaîne de Markov construite par itérations successives.
 		\begin{itemize}
 			\item Metropolis-Hastings (MH)
 			\item échantillonneur de Gibbs
@@ -413,7 +414,7 @@
 	\uncover<2-4>{
 		Bons résultats obtenus dans la littérature STE...
 		\begin{itemize}
-			\item en milieu urbain: [Keats et al., 2007], [Chow et al., 2008]
+			\item avec obstacles ou bâtiments: [Keats et al., 2007], [Chow et al., 2008]
 			\item en multi-source: [Yee et al., 2008]
 		\end{itemize}
 	}
@@ -421,14 +422,15 @@
 		... mais plusieurs inconvénients:
 		\begin{itemize}
 			\item {\color{lightred}\textit{burn-in}}: perte d'une partie des échantillons générés
-			\item états corrélés $\Rightarrow$ {\color{lightred} non-parallélisable}
+			\item génération séquentielle des états $\Rightarrow$ {\color{lightred} non-parallélisable}
 			\item MH: performances conditionnées par le {\color{lightred}choix du noyau et l'initialisation}
 			\item Gibbs:  requiert les {\color{lightred} lois conditionnelles} de $\VecTheta$
 		\end{itemize}
 		}
 
-		\item<4-> Algorithmes \textbf{d'échantillonnage d'importance} (\textbf{IS}\footnote{\textit{\textbf{I}mportance \textbf{S}ampling}}): tirage d'une population d'échantillons pondérés (ou particules) à partir d'une loi de proposition.
+		\item<4-> \textbf{Echantillonnage d'Importance} (IS): tirage d'une population d'échantillons pondérés (ou particules) à partir d'une loi de proposition.
 	\end{itemize}
+}
 
 \end{frame}
 
@@ -524,10 +526,22 @@
 %% =====  IS (2)  ================================================================
 \begin{frame}
 	\frametitle{Echantillonnage d'importance}
+	\begin{columns}
+		\column{0.65\linewidth}
 	\begin{figure}
-			\centering
-			\includegraphics[width=0.7\textwidth]{is_vanilla}
-		\end{figure}
+		\centering
+		\includegraphics[width=1\textwidth]{is_vanilla}
+	\end{figure}
+	\column{0.35\linewidth}
+		\begin{equation*}
+			\begin{split}
+				\bm{w}(\VecTheta) &= \dfrac{\color{lightred}\pi(\VecTheta)}{\color{green!40!black}\varphi(\VecTheta)} \\
+				{\color{blue}\bm{\widetilde{w}}(\VecTheta)} &= \dfrac{\bm{w}(\VecTheta)}{\sum\limits_{i=1}^N {w}(\theta^{(i)})} \\
+				{\color{lightred} \pi(\VecTheta)} &\simeq \sum\limits_{i=1}^N {\color{blue}\widetilde{w}(\VecTheta^{(i)})} \delta_{\VecTheta^{(i)}}(\VecTheta)
+			\end{split}
+		\end{equation*}
+	\end{columns}
+
 { 		Avantages:
 		\begin{itemize}
 			\item échantillons i.i.d\footnote{\textbf{i}ndépendants \textbf{i}dentiquement \textbf{d}istribués}.: traitement parallélisable
@@ -560,10 +574,11 @@
 %% =====  IS adaptatif  ================================================================
 \begin{frame}
 	\frametitle{Echantillonnage d'importance adaptatif}
-	\textbf{Solution}: adapter itérativement la loi de proposition $\varphi$
+	\textbf{Solution}: adapter  la loi de proposition $\varphi$
 	\uncover<2->{
 	\begin{blueblock}{Population Monte Carlo [Cappé et al., 2004]}
-		Introduction du concept d'adaptation par minimisation de la divergence de Kullback-Leibler (KL): $$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta$$
+		Ajustement itératif des particules par perturbation aléatoire + ré-échantillonnage.
+%		Introduction du concept d'adaptation par minimisation de la divergence de Kullback-Leibler (KL): $$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta$$
 	\end{blueblock}
 }
 \uncover<3->{
@@ -571,7 +586,9 @@
 		\begin{itemize}
 			\item Loi de proposition $\varphi_{\bm{\alpha}}$ $\rightarrow$  mélange de noyaux $\left\{(\alpha_d, \varphi_d)\right\}_{1\leq d \leq D} $:
 			$$ \varphi_{\bm{\alpha}}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta)$$
-			\item Optimisation des $\alpha_d$ par minimisation KL.
+			\item Optimisation des $\alpha_d$ par minimisation de la divergence KL:
+			$$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi_{\bm{alpha}}(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta$$
+			
 		\end{itemize}
 	\end{blueblock}
 }
@@ -598,7 +615,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			\item 		Ré-utilisation des particules de toutes les itérations pour:
 			\begin{itemize}
 				\item le calcul et recyclage de tous les poids d'importance,
-				\item l'optimisation des $\alpha_d$ et $\bm{\nu}_d$.
+				\item l'optimisation des $\alpha_d$ et $\bm{\nu}_d$ en utilisant la  
 			\end{itemize}
 		\end{itemize}
 	\end{blueblock}

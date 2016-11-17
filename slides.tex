@@ -119,7 +119,7 @@
 
 \title{Inférence bayésienne adaptative pour la reconstruction de source en dispersion atmosphérique}
 \author{Harizo RAJAONA}
-\institute{Directeur de thèse: François SEPTIER \\
+\institute{Directeurs de thèse: François SEPTIER, Yves DELIGNON \\
 	Co-encadrant: Patrick ARMAND}
 % logo of my university
 \titlegraphic{
@@ -322,15 +322,15 @@
 		\uncover<2->{\item approche probabiliste $\rightarrow$ {\color{lightgreen}\textbf{quantification des incertitudes}} (observations et paramètres), indispensable
 			pour \textbf{l'aide à la décision}}
 		\uncover<3->{\item possibilité de spécifier une {\color{lightgreen}\textbf{information a priori}} sur la source}
-		\uncover<4->{\item {\color{lightred} \textbf{hypothèses fortes}} sur la source:
+		\uncover<4->{\item limitations des approches existantes dans la littérature STE:
 		\begin{itemize}
-			\item position ou profil d'émission supposés connus
-			\item restrictions à des sources instantanées
+			\item  {\color{lightred} \textbf{hypothèses fortes}} sur la source (certains paramètres supposés connus, rejets instantanés...)
+			\item \textbf{{\color{lightred} temps de calcul élevés}} pour les scénarios complexes}
 		\end{itemize}
-	}
-		\uncover<5->{\item \textbf{{\color{lightred} temps de calcul élevés}} pour les scénarios complexes}
+
+
 	\end{itemize}
-	\end{itemize}
+\end{itemize}
 \end{frame}
 
 
@@ -393,7 +393,7 @@
 	\end{blueblock}
 }
 	\uncover<5->{
-	\textbf{Problème}: tirage direct depuis $\pi$ impossible ! \\
+	\textbf{Problème}: intégrale impossible à calculer ! \\
 	$\Rightarrow$ utiliser des lois plus simples
 	}
 
@@ -587,7 +587,7 @@
 			\item Loi de proposition $\varphi_{\bm{\alpha}}$ $\rightarrow$  mélange de noyaux $\left\{(\alpha_d, \varphi_d)\right\}_{1\leq d \leq D} $:
 			$$ \varphi_{\bm{\alpha}}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta)$$
 			\item Optimisation des $\alpha_d$ par minimisation de la divergence KL:
-			$$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi_{\bm{alpha}}(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta$$
+			$$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi_{\bm{\alpha}}(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta$$
 			
 		\end{itemize}
 	\end{blueblock}
@@ -612,10 +612,10 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\begin{blueblock}{Adaptive Multiple Importance Sampling (AMIS) [Cornuet et al., 2012]}
 		\begin{itemize}
 			\item Loi de proposition identique à celle du M-PMC
-			\item 		Ré-utilisation des particules de toutes les itérations pour:
+			\item 		Ré-utilisation des particules de \textbf{toutes les itérations }pour:
 			\begin{itemize}
 				\item le calcul et recyclage de tous les poids d'importance,
-				\item l'optimisation des $\alpha_d$ et $\bm{\nu}_d$ en utilisant la  
+				\item l'optimisation des $\alpha_d$ et $\bm{\nu}_d$ 
 			\end{itemize}
 		\end{itemize}
 	\end{blueblock}
@@ -893,16 +893,16 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\includegraphics[width=1\textwidth]{amis_workflow}
 	\end{figure}
 \end{frame}
-
+%% ======= ==============================================================
 \begin{frame}
-	\frametitle{Loi marginale $p(\VecPosSource | \VecObs)$}
+	\frametitle{Démarche de résolution}
 	\begin{figure}
 		\centering
 			\includegraphics[width=1\textwidth]{bayesian_workflow_final}
-
 	\end{figure}
+		$$ p(\VecPosSource, \VecQSource | \VecObs) \simeq \sum\limits_{k=0}^K \sum\limits_{i=1}^{N_p} \widetilde{w}^{(i)}_k p(\VecQSource | \VecPosSource_k^{(i)}, \VecObs) \delta_{\VecPosSource^{(i)}_k}(\VecPosSource)$$
+
 \end{frame}
-%% =======
 
 %% ======= ==============================================================
 
@@ -1010,20 +1010,21 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\begin{important}
 		{\small 		\textit{"An adaptive Bayesian inference algorithm to estimate the parameters of a hazardous atmospheric release"} \\ Rajaona et al., Atmospheric Environment, 2015}
 	\end{important}
-	
+	\uncover<2->{
 	\begin{itemize}
-		\uncover<2->{
 		\item Bons résultats pour la localisation (synthétique + réel)
 		\item Bonne estimation du profil d'émission (synthétique)
 		\item Valeur ajoutée de l'adaptivité par rapport au MCMC
+		\item{\color{lightred} résultats approximatifs pour $\widehat{\VecQSource}$ sur données expérimentales}\\
+		$\Rightarrow$ nécessite un meilleur modèle de dispersion ?
+	\end{itemize}
 	}
 		\uncover<3->{
 		\vspace{0.5cm}
-		\item{\color{lightred} résultats approximatifs pour $\widehat{\VecQSource}$ sur données expérimentales}\\
-		$\Rightarrow$ requiert un meilleur modèle de dispersion?
-		\item charge de calcul concentrée sur la construction des $\MatC(\VecPosSource)$ \\ $\Rightarrow$ {\color{lightred}méthode coûteuse pour modèles plus complexes !}
+		\begin{itemize}
+			\item charge de calcul concentrée sur la construction des $\MatC(\VecPosSource)$ \\ $\Rightarrow$ {\color{lightred}méthode coûteuse pour modèles plus complexes !}
+		\end{itemize}
 	}
-	\end{itemize}
 \end{frame}
 
 % ================================================================
@@ -1095,7 +1096,11 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	
 	\vspace{1cm}
 	\uncover<4>{
-	\textbf{Alternative}: optimiser le mode de calcul des matrices source-récepteur}
+	\textbf{Alternative}: optimiser la chaine de calcul...\\
+	\begin{enumerate}
+		\item pour la construction des matrices SR
+		\item pour l'initialisation de la loi de proposition
+	\end{enumerate}}
 \end{frame}
 
 % ================================================================
@@ -1184,7 +1189,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			\item $N_C$ = 25 capteurs
 		\end{itemize}}
 		\column[]{0.5\linewidth}
-			\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{beaune-}{0}{23}
+			\animategraphics[autoplay,loop,every=1,type=png,width=1\textwidth]{2}{beaune-}{0}{23}
 
 
 	\end{columns}
@@ -1250,45 +1255,51 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \begin{frame}
 	\frametitle{Cas simulé Beaune: résultats}
-	Influence de $\sigma_{obs}^2$:
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.6\textwidth]{beaune_varobs_errors}
-	\end{figure}
-	
-	\begin{itemize}
-		\item "confiance" accordée aux observations $\VecObs$
-		\item observations simulées \\ $\Rightarrow$  erreur faible pour $\sigma_{obs}^2$ faible
-	\end{itemize}
+	Influence des hyperparamètres:
+	\begin{columns}
+		\column{0.5\linewidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{beaune_varobs_errors}
+				\caption*{variance d'observation $\sigma_{obs}^2$}
+			\end{figure}
+		\column{0.5\linewidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1\textwidth]{beaune_varq_errors_q}
+				\caption*{variance a priori $\MatSigma_q = \sigma_q^2 \MatI$}
+			\end{figure}
+	\end{columns}
+%	\begin{itemize}
+%		\item "confiance" accordée aux observations $\VecObs$
+%		\item observations simulées \\ $\Rightarrow$  erreur faible pour $\sigma_{obs}^2$ faible
+%	\end{itemize}
 \end{frame}
 
 % =============================================================
 
-\begin{frame}
-	\frametitle{Cas simulé Beaune: résultats}
-	Influence de $\MatSigma_q = \sigma_q^2 \MatI$:
-	\begin{columns}
-		\column[]{0.5\textwidth}
-			\begin{figure}
-				\centering
-				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_x}\\
-				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_y}
-			\end{figure}
+%\begin{frame}
+%	\frametitle{Cas simulé Beaune: résultats}
+%	Influence de $\MatSigma_q = \sigma_q^2 \MatI$:
+%	\begin{columns}
+%		\column[]{0.5\textwidth}
+%			\begin{figure}
+%				\centering
+%				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_x}\\
+%				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_y}
+%			\end{figure}
+%%			\begin{itemize}
+%%				\item localisation variant sur l'axe du vent
+%%			\end{itemize}
+%		\column[]{0.5\textwidth}
+%
 %			\begin{itemize}
 %				\item localisation variant sur l'axe du vent
+%				\item $\sigma_q^2$ trop faible $\Rightarrow$ débit sous-estimé
+%				\item $\sigma_q^2$ trop élevé $\Rightarrow$ débit surestimé
 %			\end{itemize}
-		\column[]{0.5\textwidth}
-			\begin{figure}
-				\centering
-				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_q}
-			\end{figure}
-			\begin{itemize}
-				\item localisation variant sur l'axe du vent
-				\item $\sigma_q^2$ trop faible $\Rightarrow$ débit sous-estimé
-				\item $\sigma_q^2$ trop élevé $\Rightarrow$ débit surestimé
-			\end{itemize}
-	\end{columns}
-\end{frame}
+%	\end{columns}
+%\end{frame}
 
 % ==============================================================
 
@@ -1365,11 +1376,11 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 				\item $N_C$ = 10 capteurs
 			\end{itemize}}
 			\column[]{0.5\linewidth}
-				\animategraphics[autoplay,loop,every=2,type=png,width=1\textwidth]{5}{opera-}{0}{17}
+				\animategraphics[autoplay,loop,every=1,type=png,width=1\textwidth]{5}{opera-}{1}{17}
 			
 		\end{columns}
 		\vspace{0.5cm}
-			\uncover<2->{\textbf{Problème}: complexité du cas d'étude \\ $\Rightarrow$ {\color{lightred}convergence impossible} avec une initialisation uniforme !}
+			\uncover<2->{\textbf{Problème}: complexité du cas d'étude \\ $\Rightarrow$ {\color{lightred}convergence très lente} avec une initialisation uniforme !}
 \end{frame}
 
 % ================================================================
@@ -1433,29 +1444,25 @@ Avec initialisation améliorée:
 {\small 		\textit{"A Bayesian approach of the source term estimate coupling retro-dispersion computations with a Lagrangian particle dispersion model and the Adaptive Multiple Importance Sampling"} \\ Rajaona et al., HARMO17, 2016}
 	\end{important}
 	
+	
 	\begin{itemize}
-		\uncover<2->{\item Amélioration du processus d'estimation: 
+{\small 	
+		\uncover<2->{\item Pré-calcul des matrices SR:
 		\begin{itemize}
-			\item couplage avec un meilleur modèle de dispersion (PMSS)
-			\item pré-calcul des $\MatC(\VecPosSource)$ $\Rightarrow$ temps de calcul raisonnable ($\leq$ 5 minutes)
+			\item pas de ralentissement pour l'estimation malgré un modèle de dispersion plus complexe
+			\item utilisation de RetroSPRAY en mode parallèle pour accélérer le pré-calcul
 		\end{itemize}
 	}
-	\uncover<3->{
-		\item Cas Beaune:
-		\begin{itemize}
-			\item bons résultats pour localisation et estimation du débit
-			\item sensibilité aux hyperparamètres $\sigma_{obs}^2$ et $\sigma_q^2$ \\
-			$\Rightarrow$ modèle bayésien hiérarchique?
-			\item importance du capteur le plus informatif
-		\end{itemize}
-	}
+		\uncover<3->{
+			\item Influence des hyperparamètres et du réseau de mesure (Beaune)
+		}
 	\uncover<4->{
-		\item Cas Opéra:
+		\item Initialisation améliorée de la loi de proposition:
 		\begin{itemize}
-			\item bons résultats avec l'initialisation optimisée de l'AMIS
-			\item optimisation du tirage des particules AMIS avec présence de bâtiments?
+			\item offre un complément déterministe à l'approche de simulation aléatoire
+			\item permet une bonne estimation de la source sur un cas difficile (Opéra)
 		\end{itemize}
-	}
+	}}
 	\end{itemize}
 \end{frame}
 
@@ -1468,10 +1475,11 @@ Avec initialisation améliorée:
 	\begin{itemize}
 		\item Méthode permettant une \textbf{estimation simultanée} de la \textbf{localisation} et du \textbf{profil temporel d'émission} d'un rejet atmosphérique
 		\item \textbf{Validation} sur des cas-tests synthétiques et expérimentaux 
-		\item Couplage de la méthode avec un \textbf{modèle de dispersion complexe} \\
-		$\Rightarrow$ {\small permet d'appréhender des situations difficiles (relief, bâtiments, météo instationnaire) sans ralentir l'algorithme d'estimation}
-		\item \textbf{Optimisation de l'initialisation de l'AMIS} avec utilisation d'un modèle rétrograde \\
-		$\Rightarrow${\small  illustration de la complémentarité des approches déterministe et probabiliste}
+		\item Couplage de la méthode avec un \textbf{modèle de dispersion complexe}:
+		\begin{itemize}
+			\item scalabilité assurée par le pré-calcul des matrices SR en mode rétrograde
+			\item initialisation améliorée de l'algorithme d'estimation pour traiter les cas difficiles
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -1482,7 +1490,8 @@ Avec initialisation améliorée:
 	\begin{itemize}
 		\item Test et validation sur un cas urbain expérimental:\\
 		$\Rightarrow$ {\small Mock Urban Setting (MUST), Joint Urban 2003 ...}
-		\item Etude approfondie de l'impact des hyperparamètres
+		\item Etude approfondie de l'impact des hyperparamètres \\
+		$\Rightarrow$ modèles hiérarchiques bayésiens?
 		\item Application au dimensionnement d'un réseau de capteurs:\\
 			$\Rightarrow$ {\small recherche de la topologie optimale pour un problème STE}
 		\item Traitement séquentiel des observations:\\

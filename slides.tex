@@ -277,7 +277,7 @@
 		\only<1>{}
 		\begin{itemize}
 			\only<2>{
-				\item \textbf{Rétro-transport}: étude de la forme duale des équations d'advection-diffusion 
+				\item \textbf{Rétro-transport}: étude de la forme duale de l'équation d'advection-diffusion 
 				\begin{itemize}
 					\item solution intuitive du problème physique
 					\item {\color{lightred} interprétation des rétro-concentrations, requiert un modèle fiable}
@@ -378,7 +378,7 @@
 					$$ \mathbb{E}_{\pi}[\VecTheta] = \int \VecTheta \pi(\VecTheta) d\VecTheta $$
 		}
 	\uncover<2->{
-		\textbf{Problème}: {\color{red} impossible d'obtenir une expression analytique pour $\pi(\VecTheta)$ ! \\
+		\textbf{Problème}: {\color{red} intégrale souvent impossible à calculer ! \\
 			
 			}
 	}
@@ -393,7 +393,7 @@
 	\end{blueblock}
 }
 	\uncover<5->{
-	\textbf{Problème}: intégrale impossible à calculer ! \\
+	\textbf{Problème}: {\color{lightred} impossible de tirer directement depuis $\pi$ !} \\
 	$\Rightarrow$ utiliser des lois plus simples
 	}
 
@@ -614,7 +614,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			\item Loi de proposition identique à celle du M-PMC
 			\item 		Ré-utilisation des particules de \textbf{toutes les itérations }pour:
 			\begin{itemize}
-				\item le calcul et recyclage de tous les poids d'importance,
+				\item le calcul et recyclage de tous les poids d'importance
 				\item l'optimisation des $\alpha_d$ et $\bm{\nu}_d$ 
 			\end{itemize}
 		\end{itemize}
@@ -808,7 +808,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\frametitle{Loi conditionnelle $p(\VecQSource | \VecPosSource, \VecObs)$}
 	\begin{greenblock}{Contrainte de positivité [Simon et al., 2006]}
 		% Troncature sans changer la nature gaussienne de la PDF
-		\textbf{Objectif}: tronquer $p(\VecQSource | \VecPosSource, \VecObs)$ à des valeurs positives en conservant la nature gaussienne de la densité d'origine.
+		\textbf{Objectif}: adapter une loi gaussienne $\mathcal{N}(\widetilde{\VecMu}_q^c, \widetilde{\MatSigma}_q^c)$ sur une troncature de  $p(\VecQSource | \VecPosSource, \VecObs)$ à des valeurs positives.
 		\begin{itemize}
 			\item assure la cohérence physique de la solution
 			\item {\color{lightred}rallonge le temps de calcul}
@@ -1380,7 +1380,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			
 		\end{columns}
 		\vspace{0.5cm}
-			\uncover<2->{\textbf{Problème}: complexité du cas d'étude \\ $\Rightarrow$ {\color{lightred}convergence très lente} avec une initialisation uniforme !}
+			\uncover<2->{\textbf{Problème}: complexité du cas d'étude \\ $\Rightarrow$ {\color{lightred}convergence très lente} avec une initialisation ``uniforme" !}
 \end{frame}
 
 % ================================================================

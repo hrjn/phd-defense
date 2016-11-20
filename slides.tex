@@ -280,7 +280,8 @@
 				\item \textbf{Rétro-transport}: étude de la forme duale de l'équation d'advection-diffusion 
 				\begin{itemize}
 					\item solution intuitive du problème physique
-					\item {\color{lightred} interprétation des rétro-concentrations, requiert un modèle fiable}
+					\item {\color{lightred} interprétation des rétro-concentrations
+					\item  requiert un modèle dual fiable}
 				\end{itemize}
 				\begin{figure}
 					\centering
@@ -293,7 +294,11 @@
 				\begin{itemize}
 					\item implémentation simple 
 					\item $\bm{\varsigma} \in \mathbb{R}^{N_x N_y N_z N_t}$ $\Rightarrow$ {\color{lightred}dimension élevée} du terme source 
-					\item {\color{lightred} choix d'un maillage adapté}
+					\item le {\color{lightred} choix du maillage} conditionne:
+					\begin{itemize}
+						\item les temps de calcul
+						\item la qualité de la solution
+					\end{itemize}
 			\end{itemize}
 			}
 		\only<4>{
@@ -428,7 +433,7 @@
 		\end{itemize}
 		}
 
-		\item<4-> \textbf{Echantillonnage d'Importance} (IS): tirage d'une population d'échantillons pondérés (ou particules) à partir d'une loi de proposition.
+		\item<4-> \textbf{Echantillonnage d'Importance, ou \textit{Importance Sampling}} (IS): tirage d'une population d'échantillons pondérés (ou \textbf{particules}) à partir d'une loi de proposition.
 	\end{itemize}
 }
 
@@ -587,7 +592,7 @@
 			\item Loi de proposition $\varphi_{\bm{\alpha}}$ $\rightarrow$  mélange de noyaux $\left\{(\alpha_d, \varphi_d)\right\}_{1\leq d \leq D} $:
 			$$ \varphi_{\bm{\alpha}}(\VecTheta) = \sum\limits_{d=1}^D \bm{\alpha}_d \varphi_d(\VecTheta)$$
 			\item Optimisation des $\alpha_d$ par minimisation de la divergence KL:
-			$$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi_{\bm{\alpha}}(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta$$
+			$$ KL(\pi || \varphi_{\bm{\alpha}}) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi_{\bm{\alpha}}(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta$$
 			
 		\end{itemize}
 	\end{blueblock}
@@ -1123,6 +1128,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			\includegraphics[width=0.9\textwidth]{retrograde_workflow_step_2}
 		}
 	\end{figure}
+	\only<2>{$\Rightarrow$ suppression des calculs de dispersion dans l'algorithme d'estimation}
+
 \end{frame}
 
 % ==================================================================
@@ -1167,7 +1174,6 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\begin{itemize}
 		\item un seul calcul rétrograde par capteur (au lieu d'un calcul ``direct" par maille)
 		\item pré-calcul entièrement parallélisable
-		\item suppression des appels au modèle de dispersion dans les itérations d'AMIS
 
 	\end{itemize}
 }
@@ -1511,3 +1517,5 @@ Avec initialisation améliorée:
 	\end{figure}
 \end{frame}
 \end{document}
+
+% ====================================================================

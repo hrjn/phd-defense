@@ -1,12 +1,6 @@
 \documentclass{beamer}
 \setbeamercovered{transparent=10}
 
-%TODO: insert logos in title page, order:
-%1. CEA
-%2. CRIStAL
-%3. Telecom Lille
-%4. ARIA
-%TODO: transitions with "transparent unseen content"
 
 
 
@@ -1516,6 +1510,36 @@ Avec initialisation améliorée:
 		\includegraphics[width=0.65\textwidth]{logos_big}
 	\end{figure}
 \end{frame}
-\end{document}
+
 
 % ====================================================================
+% SLIDES SUPPORT QUESTIONS 
+% ====================================================================
+
+\begin{frame}
+	\frametitle{AMIS: temps de calcul}
+	\begin{itemize}
+		\item FFT 07:
+		\begin{itemize}
+			\item AMIS, $(K, N_p) = (10, 100)$ sans CP: $ t_{CPU} \simeq$ 18 min \\
+			{\color{lightred}89\%} du calcul ($\simeq$  16.1min) sur le modèle de dispersion
+		\end{itemize}
+		
+		\item Beaune:
+		\begin{itemize}
+			\item 1 calcul ``direct" (SPRAY) pour une particule statistique: 30 s\\
+			$\Rightarrow$ pour $(K, N_p) = (10, 100)$, $t_{CPU} \simeq $ {\color{lightred}8.3 h}
+			\item temps de calcul pour 1 itération AMIS:\\
+			\begin{tabular}{l|c}
+				Architecture & $t_{CPU}$ \\ 
+				\hline
+				\textit{laptop}, HDD 5400 tr/min & {\color{lightred}6240 s} \\ 
+				\textit{laptop}, SSD  & {\color{lightgreen}36 s} \\ 
+				\textit{cluster} AIRAIN (stockage distribué + cache) & {\color{lightgreen} 15 s} \\ 
+				& 
+			\end{tabular} 
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\end{document}

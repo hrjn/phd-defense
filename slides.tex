@@ -1519,13 +1519,13 @@ Avec initialisation améliorée:
 \begin{frame}
 	\frametitle{AMIS: temps de calcul}
 	\begin{itemize}
-		\item FFT 07:
+		\item FFT 07 (modèle à bouffées gaussiennes):
 		\begin{itemize}
 			\item AMIS, $(K, N_p) = (10, 100)$ sans CP: $ t_{CPU} \simeq$ 18 min \\
 			{\color{lightred}89\%} du calcul ($\simeq$  16.1min) sur le modèle de dispersion
 		\end{itemize}
 		
-		\item Beaune:
+		\item Beaune (PMSS):
 		\begin{itemize}
 			\item 1 calcul ``direct" (SPRAY) pour une particule statistique: 30 s\\
 			$\Rightarrow$ pour $(K, N_p) = (10, 100)$, $t_{CPU} \simeq $ {\color{lightred}8.3 h}

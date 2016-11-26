@@ -1,4 +1,5 @@
 ## Custom folders:
+code/.ipynb_checkpoints
 *.swp
 *.pages
 examples/*

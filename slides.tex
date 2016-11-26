@@ -1,9 +1,12 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PhD defense
+% Author: Harizo RAJAONA
+% Title: Inférence bayésienne adaptative pour la reconstruction de source en dispersion atmosphérique
+% Date: Monday, November 21st 2016
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \documentclass{beamer}
 \setbeamercovered{transparent=10}
-
-
-
-
 
 \usepackage[utf8]{inputenc}
 \usepackage[frenchb]{babel}
@@ -84,7 +87,6 @@
 	\begin{block}{#2}\textbf{#1}}{\end{block}}
 
 
-
 \newcommand{\VecQSource}{{\bm{q}}}
 \newcommand{\VecPosSource}{{\bm{x_s}}}
 \newcommand{\VecTheta}{{\bm{\theta}}}
@@ -99,8 +101,6 @@
 \newcommand{\PostCovQ}{{\widetilde{\bm{\Sigma}}_q}}
 \newcommand{\VecMu}{{\bm{\mu}}}
 
-
-
 \definecolor{lightgreen}{rgb}{0.0,0.8,0.0}
 \definecolor{lightblue}{rgb}{0.3,0.8,1.0}
 \definecolor{lightred}{rgb}{0.874,0.180,0.105}
@@ -110,12 +110,10 @@
 
 
 
-
 \title{Inférence bayésienne adaptative pour la reconstruction de source en dispersion atmosphérique}
 \author{Harizo RAJAONA}
 \institute{Directeurs de thèse: François SEPTIER, Yves DELIGNON \\
 	Co-encadrant: Patrick ARMAND}
-% logo of my university
 \titlegraphic{
 	\centering
 	\includegraphics[width=0.65\textwidth]{logos_big}
@@ -123,19 +121,15 @@
 \date{21 novembre 2016}
 
 \begin{document}
-	
-	
-	
-	
+
 \AtBeginSection[]
 {
 	\begin{frame}
 		\tableofcontents[currentsection]
-		% Die Option [pausesections]
 	\end{frame}
 }
-	
-	
+
+
 \begin{frame}
 	\titlepage
 \end{frame}
@@ -145,7 +139,7 @@
 
 \section{Contexte et problématique}
 
-% ===== Contexte (1) ================================================================
+% =============================================================================
 \begin{frame}
 	\frametitle{Contexte}
 	Les rejets \textbf{NRBC}\footnote{\textbf{N}ucléaires, \textbf{R}adiologiques, \textbf{B}iologiques, \textbf{C}himiques} dans l'atmosphère peuvent être d'origine:
@@ -181,7 +175,7 @@
 	\end{itemize}
 \end{frame}
 
-% ===== Contexte (2) ================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Contexte}
@@ -198,7 +192,7 @@
 	\end{figure}
 \end{frame}
 
-% ===== Physique de l'atmosphère ================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Dispersion atmosphérique}
@@ -225,7 +219,8 @@
 }
 \end{frame}
 
-% =====  Terme source  ================================================================
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Terme source: définitions}
 	Nature de la source:
@@ -247,7 +242,7 @@
 	
 \end{frame}
 
-% =====  Terme source  ================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Terme source: estimation (principe)}
@@ -311,7 +306,7 @@
 \end{frame}
 
 
-% =====  Problématique de recherche ================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Terme source: estimation (état de l'art)}
@@ -343,14 +338,12 @@
     	\end{itemize}
     \end{topic}
 \end{frame}
-	
 
+% =============================================================================
 
-% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 \section{Méthodologie adaptative pour l'inférence bayésienne}
-% =====  Le choix bayésien ================================================================
 
+% =============================================================================
 \begin{frame}
 	\frametitle{Inférence bayésienne}
 	\textbf{Principe}: estimation probabiliste des paramètres $\VecTheta$ d'un système ayant généré un ensemble d'observations $\VecObs$.
@@ -368,7 +361,8 @@
 		\end{itemize}
 		\end{blueblock}
 \end{frame}
-% =====  Méthodes MC  ================================================================
+
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Inférence bayésienne}
@@ -397,6 +391,8 @@
 	}
 
 \end{frame}
+
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Méthodes d'échantillonnage}
@@ -433,96 +429,8 @@
 
 \end{frame}
 
-% =====  MCMC (1)  ================================================================
+% =============================================================================
 
-%\begin{frame}
-%	\frametitle{MCMC}
-%	\begin{block}{Markov Chain Monte-Carlo (MCMC)}
-%		Méthodes de construction d'une chaîne de Markov dont la distribution stationnaire est la loi cible $\pi$.
-%	\end{block}
-%	
-%	Approches classiques:
-%	\begin{itemize}
-%		\item algorithme de Metropolis-Hastings
-%		\item échantillonneur de Gibbs
-%	\end{itemize}
-%	
-%    \begin{algorithme}[Exemple: Metropolis-Hastings (MH)\\]
-%	    Initialiser la chaîne à $\VecTheta^{(0)}$ et choisir un noyau de transition $\mathcal{K}(\cdot, \cdot)$. A la i-ème itération et jusqu'à convergence:\\
-%	    \begin{enumerate}
-%	    	\item Tirer $\VecTheta^* \sim \mathcal{K}(\VecTheta^{(i-1)},\VecTheta^*)$
-%	    	\item Calculer $r = \text{min }\left\{1, \dfrac{\pi(\VecTheta^*)\mathcal{K}(\VecTheta^*,\VecTheta^{(i-1)})}{\pi(\VecTheta^{(i-1)})\mathcal{K}(\VecTheta^{(i-1)},\VecTheta)}\right\}$
-%	    	\item Accepter $\VecTheta^{(i)} = \VecTheta$ avec la probabilité $r$. Si rejet, garder $\VecTheta^{(i)} = \VecTheta^{(i-1)}$	    	
-%	    \end{enumerate}
-%    \end{algorithme}
-%	
-%\end{frame}
-
-% =====  MCMC (2)  ================================================================
-%\begin{frame}
-%	\frametitle{MCMC}
-%	MH sur un mélange de gaussiennes: {\small $\pi(\VecTheta) = \gamma\mathcal{N}(\VecTheta|\mu_1, \sigma_1^2) + (1-\gamma)\mathcal{N}(\VecTheta | \mu_2, \sigma_2^2)$}
-%	\begin{columns}
-%		\column{0.8\linewidth}
-%			\begin{figure}
-%				\only<1>{
-%				\includegraphics[width=0.75\textwidth]{mh_1}
-%				}
-%				\only<2>{
-%					\includegraphics[width=0.75\textwidth]{mh_2}
-%				}
-%				\only<3>{
-%					\includegraphics[width=0.75\textwidth]{mh_3}
-%				}
-%			\end{figure}
-%		\column{0.2\linewidth}
-%{\small 			$\gamma = 0.3$\\
-%			$\mu_1 = -20$\\
-%			$\sigma_1 = 10$\\
-%			$\mu_2 = 20$\\
-%			$\sigma_2 = 10$\\}
-%	\end{columns}
-%	\begin{itemize}
-%		\item<1>\textit{Bad mixing}: transitions trop {\color{red}faibles}
-%		\item<2>\textit{Bad mixing}: transitions trop {\color{red}grandes}
-%		\item<3>\textit{Good mixing}
-%		\item<3> Performances liées aux choix du noyau et de l'initialisation !
-%	\end{itemize}
-%\end{frame}
-
-% =====  MCMC (2)  ================================================================
-%\begin{frame}
-%	\frametitle{MCMC}
-%	
-%	Limitations de l'approche MCMC:
-%	\begin{itemize}
-%		\item états consécutifs corrélés: non-parallélisable
-%		\item perte d'une partie des échantillons générés (\textit{burn-in})
-%		\item MH: performances liées aux choix du noyau et de l'initialisation
-%		\item Gibbs: nécessite de connaître les lois conditionnelles de $\VecTheta$
-%	\end{itemize}
-%	
-%	
-%\end{frame}
-
-%% =====  IS (1)  ================================================================
-%\begin{frame}
-%	\frametitle{Echantillonnage d'importance}
-%	\begin{block}{Echantillonnage d'importance}
-%		\begin{enumerate}
-%			\item Définir une loi de proposition $\varphi(\VecTheta)$ à support inclus dans celui de $\pi$
-%			\item Tirer $\VecTheta \sim \varphi$
-%			\item Calculer les poids d'importance $w(\VecTheta) = \dfrac{\pi(\VecTheta)}{\varphi(\VecTheta)}$
-%		\end{enumerate}
-%	\end{block}
-%	
-%	Normalisation nécessaire si $\pi$ connu uniquement à une constante près:
-%	$$ \widetilde{w}(\VecTheta) = \dfrac{w^{(i)}(\VecTheta)}{\sum\limits_{i=1}^N w^{(i)}(\VecTheta)} $$
-%		
-%	On peut alors approximer la loi cible: 
-% $$ \pi(\VecTheta) \simeq \sum\limits_{i=1}^N \widetilde{w}(\VecTheta^{(i)})\delta_{\VecTheta^{(i)}}(\VecTheta) $$
-%\end{frame}
-%% =====  IS (2)  ================================================================
 \begin{frame}
 	\frametitle{Echantillonnage d'importance}
 	\begin{columns}
@@ -570,14 +478,15 @@
 			}
 		\end{figure}
 \end{frame}
-%% =====  IS adaptatif  ================================================================
+
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Echantillonnage d'importance adaptatif}
 	\textbf{Solution}: adapter  la loi de proposition $\varphi$
 	\uncover<2->{
 	\begin{blueblock}{Population Monte Carlo [Cappé et al., 2004]}
 		Ajustement itératif des particules par perturbation aléatoire + ré-échantillonnage.
-%		Introduction du concept d'adaptation par minimisation de la divergence de Kullback-Leibler (KL): $$ KL(\pi, \varphi) = \int \log \bigg(\dfrac{\pi(\VecTheta)}{\varphi(\VecTheta)}\bigg)\pi(\VecTheta)d\VecTheta$$
 	\end{blueblock}
 }
 \uncover<3->{
@@ -592,6 +501,9 @@
 	\end{blueblock}
 }
 \end{frame}
+
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Echantillonnage d'importance adaptatif}
 	
@@ -605,7 +517,8 @@
 Jusqu'ici: optimisation itérative seulement en fonction de l'itération précédente!
 \end{frame}
 
-%% =====  IS adaptatif (2)  ================================================================
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Echantillonnage d'importance adaptatif}
 	\begin{blueblock}{Adaptive Multiple Importance Sampling (AMIS) [Cornuet et al., 2012]}
@@ -636,9 +549,12 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{columns}
 \end{frame}
 
-%% =====================================================================
+% =============================================================================
+
 \section{Application au cas expérimental FFT07}
-%% =====================================================================
+
+% =============================================================================
+
 \begin{frame}
 	\frametitle{L'expérience FFT07}
 	Campagne expérimentale:
@@ -653,6 +569,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			\end{figure}
 
 \end{frame}
+
 %% =====================================================================
 
 \begin{frame}
@@ -682,7 +599,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{columns}
 \end{frame}
 
-%% =====================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Formalisation du problème STE}
@@ -700,7 +617,9 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\item $\VecErreur \in \mathbb{R}^{N_CT_C}$: erreurs (observation, modèle)
 	\end{itemize}
 \end{frame}
-%% =====================================================================
+
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Formalisation du problème STE}
 	
@@ -733,7 +652,9 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		}
 	\end{figure}
 \end{frame}
-%% ======= ==============================================================
+
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Démarche de résolution}
 	\begin{itemize}
@@ -757,7 +678,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 }
 \end{frame}
 
-%% ======= ==============================================================
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Démarche de résolution}
 	La marginalisation permet de n'échantillonner que les $\VecPosSource$:
@@ -767,7 +689,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{figure}
 \end{frame}
 
-%% ======= ==============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Loi conditionnelle $p(\VecQSource | \VecPosSource, \VecObs)$}
@@ -801,7 +723,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 }
 \end{frame}
 
-%% ======= ==============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Loi conditionnelle $p(\VecQSource | \VecPosSource, \VecObs)$}
@@ -834,9 +756,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\end{subfigure}
 	\end{figure}
 \end{frame}
-%% ======= ==============================================================
 
-
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Loi conditionnelle $p(\VecQSource | \VecPosSource, \VecObs)$}
@@ -853,7 +774,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			\includegraphics[width=1\textwidth]{bayesian_workflow_step_2}
 	\end{figure}
 \end{frame}
-%% ======= ==============================================================
+
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Loi marginale $p(\VecPosSource | \VecObs)$}
@@ -878,11 +800,9 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		}
 		
 	\end{itemize}
-
-
-
 \end{frame}
-%% ======= ==============================================================
+
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Loi marginale $p(\VecPosSource | \VecObs)$}
@@ -892,7 +812,9 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\includegraphics[width=1\textwidth]{amis_workflow}
 	\end{figure}
 \end{frame}
-%% ======= ==============================================================
+
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Démarche de résolution}
 	\begin{figure}
@@ -903,7 +825,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \end{frame}
 
-%% ======= ==============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Résultats (observations synthétiques)}
@@ -934,8 +856,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \end{frame}
 
+% =============================================================================
 
-%% ======= ==============================================================
 
 \begin{frame}
 	\frametitle{Résultats (observations synthétiques)}
@@ -967,7 +889,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{figure}
 \end{frame}
 
-%% ======= ==============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Résultats (observations synthétiques)}
@@ -988,7 +910,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 }
 \end{frame}
 
-% ==============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Résultats (observations expérimentales)}
@@ -1001,7 +923,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{figure}
 \end{frame}
 
-% ==============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas FFT07: conclusions}
@@ -1026,11 +948,11 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	}
 \end{frame}
 
-% ================================================================
+% =============================================================================
 
 \section{Application avec modèle rétrograde aux cas simulés Beaune et Opéra}
 
-% ================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Nouveaux objectifs}
@@ -1044,7 +966,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \end{frame}
 
-% =================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Modélisation lagrangienne avec PMSS}
@@ -1082,7 +1004,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{itemize}}
 \end{frame}
 
-% ===============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Couplage PMSS - estimation source}
@@ -1102,10 +1024,10 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{enumerate}}
 \end{frame}
 
-% ================================================================
+% =============================================================================
 
 \begin{frame}
-%	On découple la construction des matrices source-récepteur de la boucle itérative principale de l'AMIS. Comme ça, la vraisemblance se calcule directement, sans appel au modèle de dispersion.
+
 	\frametitle{Couplage PMSS - estimation source}
 	\begin{greenblock}{Proposition}
 		Pré-calculer et stocker les matrices SR $\MatC(\bm{x})$ en tout point $\bm{x}$ du domaine maillé.
@@ -1126,7 +1048,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \end{frame}
 
-% ==================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Couplage PMSS - estimation source}
@@ -1148,8 +1070,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 
 \end{frame}
 
-% ===========================================================
-
+% =============================================================================
 \begin{frame}
 	\frametitle{Couplage PMSS - estimation source}
 	\visible<1->{
@@ -1173,7 +1094,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 }
 \end{frame}
 
-% ==========================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Beaune}
@@ -1190,13 +1111,11 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		\end{itemize}}
 		\column[]{0.5\linewidth}
 			\animategraphics[autoplay,loop,every=1,type=png,width=1\textwidth]{2}{beaune-}{0}{23}
-
-
 	\end{columns}
 	
 \end{frame}
 
-% ============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Beaune: résultats}
@@ -1208,50 +1127,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{figure}
 \end{frame}
 
-% ==============================================================
-%
-%\begin{frame}
-%	\frametitle{Cas simulé Beaune: résultats}
-%	\only<1>{Influence de la variance d'observation: $\sigma_{obs}^2 = 10^{-7}$}
-%	\only<2>{Influence de la variance d'observation: $\sigma_{obs}^2 = 5 \times 10^{-7}$}
-%	\only<3>{Influence de la variance d'observation: $\sigma_{obs}^2 = 10^{-6}$}
-%	\only<4>{Influence de la variance d'observation: $\sigma_{obs}^2 = 5 \times 10^{-6}$}
-%	\only<5>{Influence de la variance d'observation: $\sigma_{obs}^2 = 10^{-5}$}
-%	\only<6>{Influence de la variance d'observation: $\sigma_{obs}^2 = 5 \times 10^{-5}$}
-%	\begin{columns}
-%		\column[]{0.5\linewidth}
-%			\begin{figure}
-%				\centering
-%				\only<1>{\includegraphics[width=0.9\textwidth]{beaune_varobs_1_x}}
-%				\only<2>{\includegraphics[width=0.9\textwidth]{beaune_varobs_2_x}}
-%				\only<3>{\includegraphics[width=0.9\textwidth]{beaune_varobs_3_x}}
-%				\only<4>{\includegraphics[width=0.9\textwidth]{beaune_varobs_4_x}}
-%				\only<5>{\includegraphics[width=0.9\textwidth]{beaune_varobs_5_x}}
-%				\only<6>{\includegraphics[width=0.9\textwidth]{beaune_varobs_6_x}}
-%				\end{figure}
-%			\column[]{0.5\linewidth}
-%			\begin{figure}
-%				\centering
-%				\only<1>{\includegraphics[width=0.9\textwidth]{beaune_varobs_1_y}}
-%				\only<2>{\includegraphics[width=0.9\textwidth]{beaune_varobs_2_y}}
-%				\only<3>{\includegraphics[width=0.9\textwidth]{beaune_varobs_3_y}}
-%				\only<4>{\includegraphics[width=0.9\textwidth]{beaune_varobs_4_y}}
-%				\only<5>{\includegraphics[width=0.9\textwidth]{beaune_varobs_5_y}}
-%				\only<6>{\includegraphics[width=0.9\textwidth]{beaune_varobs_6_y}}
-%			\end{figure}
-%	\end{columns}
-%	\begin{figure}
-%			\centering
-%			\only<1>{\includegraphics[width=0.45\textwidth]{beaune_varobs_1_q}}
-%			\only<2>{\includegraphics[width=0.45\textwidth]{beaune_varobs_2_q}}
-%			\only<3>{\includegraphics[width=0.45\textwidth]{beaune_varobs_3_q}}
-%			\only<4>{\includegraphics[width=0.45\textwidth]{beaune_varobs_4_q}}
-%			\only<5>{\includegraphics[width=0.5\textwidth]{beaune_varobs_5_q}}
-%			\only<6>{\includegraphics[width=0.5\textwidth]{beaune_varobs_6_q}}
-%		\end{figure}
-%
-%\end{frame}
-% ===========================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Beaune: résultats}
@@ -1276,32 +1152,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 %	\end{itemize}
 \end{frame}
 
-% =============================================================
+% =============================================================================
 
-%\begin{frame}
-%	\frametitle{Cas simulé Beaune: résultats}
-%	Influence de $\MatSigma_q = \sigma_q^2 \MatI$:
-%	\begin{columns}
-%		\column[]{0.5\textwidth}
-%			\begin{figure}
-%				\centering
-%				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_x}\\
-%				\includegraphics[width=0.9\textwidth]{beaune_varq_errors_y}
-%			\end{figure}
-%%			\begin{itemize}
-%%				\item localisation variant sur l'axe du vent
-%%			\end{itemize}
-%		\column[]{0.5\textwidth}
-%
-%			\begin{itemize}
-%				\item localisation variant sur l'axe du vent
-%				\item $\sigma_q^2$ trop faible $\Rightarrow$ débit sous-estimé
-%				\item $\sigma_q^2$ trop élevé $\Rightarrow$ débit surestimé
-%			\end{itemize}
-%	\end{columns}
-%\end{frame}
-
-% ==============================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Beaune: résultats}
@@ -1316,7 +1168,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{figure}
 \end{frame}
 
-% ===============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Beaune: résultats}
@@ -1357,7 +1209,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 		}
 \end{frame}
 
-% ==============================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Opéra}
@@ -1383,7 +1235,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 			\uncover<2->{\textbf{Problème}: complexité du cas d'étude \\ $\Rightarrow$ {\color{lightred}convergence très lente} avec une initialisation ``uniforme" !}
 \end{frame}
 
-% ================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Opéra}
@@ -1404,7 +1256,8 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 	\end{greenblock}
 \end{frame}
 	
-% ================================================================
+% =============================================================================
+
 \begin{frame}
 	\frametitle{Cas simulé Opéra}
 	\begin{greenblock}{Initialisation améliorée de la loi de proposition (2/2)}
@@ -1420,10 +1273,7 @@ Jusqu'ici: optimisation itérative seulement en fonction de l'itération précé
 \end{greenblock}
 \end{frame}
 
-
-
-
-% ==================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas simulé Opéra: résultats}
@@ -1435,7 +1285,7 @@ Avec initialisation améliorée:
 	\end{figure}
 \end{frame}
 
-% ==================================================================
+% =============================================================================
 
 \begin{frame}
 	\frametitle{Cas simulés Beaune et Opéra: conclusions}
@@ -1466,9 +1316,11 @@ Avec initialisation améliorée:
 	\end{itemize}
 \end{frame}
 
-% ===============================================================
+% =============================================================================
+
 \section{Conclusion et perspectives}
-% ===============================================================
+
+% =============================================================================
 \begin{frame}
 	\frametitle{Conclusion et perspectives}
 	\textbf{Résultats}:
@@ -1499,7 +1351,7 @@ Avec initialisation améliorée:
 	\end{itemize}
 \end{frame}
 
-% =================================================================
+% =============================================================================
 
 \begin{frame}
 	\begin{center}
@@ -1516,30 +1368,30 @@ Avec initialisation améliorée:
 % SLIDES SUPPORT QUESTIONS 
 % ====================================================================
 
-\begin{frame}
-	\frametitle{AMIS: temps de calcul}
-	\begin{itemize}
-		\item FFT 07 (modèle à bouffées gaussiennes):
-		\begin{itemize}
-			\item AMIS, $(K, N_p) = (10, 100)$ sans CP: $ t_{CPU} \simeq$ 18 min \\
-			{\color{lightred}89\%} du calcul ($\simeq$  16.1min) sur le modèle de dispersion
-		\end{itemize}
+% \begin{frame}
+% 	\frametitle{AMIS: temps de calcul}
+% 	\begin{itemize}
+% 		\item FFT 07 (modèle à bouffées gaussiennes):
+% 		\begin{itemize}
+% 			\item AMIS, $(K, N_p) = (10, 100)$ sans CP: $ t_{CPU} \simeq$ 18 min \\
+% 			{\color{lightred}89\%} du calcul ($\simeq$  16.1min) sur le modèle de dispersion
+% 		\end{itemize}
 		
-		\item Beaune (PMSS):
-		\begin{itemize}
-			\item 1 calcul ``direct" (SPRAY) pour une particule statistique: 30 s\\
-			$\Rightarrow$ pour $(K, N_p) = (10, 100)$, $t_{CPU} \simeq $ {\color{lightred}8.3 h}
-			\item temps de calcul pour 1 itération AMIS:\\
-			\begin{tabular}{l|c}
-				Architecture & $t_{CPU}$ \\ 
-				\hline
-				\textit{laptop}, HDD 5400 tr/min & {\color{lightred}6240 s} \\ 
-				\textit{laptop}, SSD  & {\color{lightgreen}36 s} \\ 
-				\textit{cluster} AIRAIN (stockage distribué + cache) & {\color{lightgreen} 15 s} \\ 
-				& 
-			\end{tabular} 
-		\end{itemize}
-	\end{itemize}
-\end{frame}
+% 		\item Beaune (PMSS):
+% 		\begin{itemize}
+% 			\item 1 calcul ``direct" (SPRAY) pour une particule statistique: 30 s\\
+% 			$\Rightarrow$ pour $(K, N_p) = (10, 100)$, $t_{CPU} \simeq $ {\color{lightred}8.3 h}
+% 			\item temps de calcul pour 1 itération AMIS:\\
+% 			\begin{tabular}{l|c}
+% 				Architecture & $t_{CPU}$ \\ 
+% 				\hline
+% 				\textit{laptop}, HDD 5400 tr/min & {\color{lightred}6240 s} \\ 
+% 				\textit{laptop}, SSD  & {\color{lightgreen}36 s} \\ 
+% 				\textit{cluster} AIRAIN (stockage distribué + cache) & {\color{lightgreen} 15 s} \\ 
+% 				& 
+% 			\end{tabular} 
+% 		\end{itemize}
+% 	\end{itemize}
+% \end{frame}
 
 \end{document}
